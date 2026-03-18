@@ -13,8 +13,6 @@
     "db:migrate:prod": "wrangler d1 execute whatsapp-mcp-db --file=./schemas/d1-schema.sql"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.39.0",
-    "hono": "^4.7.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {

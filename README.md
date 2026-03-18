@@ -34,9 +34,9 @@ This MCP Server lets you control WhatsApp Business directly from **Claude AI**. 
 | Support | Community | Email | Priority + SLA |
 | **Total tools** | **21** | **35** | **35** |
 
-**Buy Pro:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/1c83b498-baa7-41da-8500-601996487f86)
+**Buy Pro:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/e8a99ad7-b092-4902-9efd-1b26a16165ac)
 
-**Buy Enterprise:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/e8a99ad7-b092-4902-9efd-1b26a16165ac)
+**Buy Enterprise:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/1c83b498-baa7-41da-8500-601996487f86)
 
 ### Step 2: Get Your API Key
 
@@ -56,7 +56,7 @@ Add this to your Claude MCP configuration file:
 {
   "mcpServers": {
     "whatsapp": {
-      "type": "sse",
+      "type": "url",
       "url": "https://whatsapp-mcp-server.eosspirit.workers.dev/mcp"
     }
   }
@@ -68,7 +68,7 @@ Add this to your Claude MCP configuration file:
 {
   "mcpServers": {
     "whatsapp": {
-      "type": "sse",
+      "type": "url",
       "url": "https://whatsapp-mcp-server.eosspirit.workers.dev/mcp",
       "headers": {
         "X-API-Key": "YOUR_API_KEY_HERE"

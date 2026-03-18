@@ -78,21 +78,29 @@ export async function handleLemonSqueezyWebhook(
 ): Promise<Response> {
   const body = await request.text();
 
-  // Verify webhook signature
-  const signature = request.headers.get("x-signature");
-  if (env.LEMONSQUEEZY_WEBHOOK_SECRET) {
-    const isValid = await verifyLemonSignature(
-      body,
-      signature,
-      env.LEMONSQUEEZY_WEBHOOK_SECRET
-    );
-    if (!isValid) {
-      logger.warn("Invalid Lemonsqueezy webhook signature");
-      return new Response("Invalid signature", { status: 401 });
-    }
+  // Verify webhook signature — REJECT if secret not configured
+  if (!env.LEMONSQUEEZY_WEBHOOK_SECRET) {
+    logger.error("LEMONSQUEEZY_WEBHOOK_SECRET not configured — rejecting webhook");
+    return new Response("Webhook secret not configured", { status: 500 });
   }
 
-  const event: LemonSqueezyWebhookEvent = JSON.parse(body);
+  const signature = request.headers.get("x-signature");
+  const isValid = await verifyLemonSignature(
+    body,
+    signature,
+    env.LEMONSQUEEZY_WEBHOOK_SECRET
+  );
+  if (!isValid) {
+    logger.warn("Invalid Lemonsqueezy webhook signature");
+    return new Response("Invalid signature", { status: 401 });
+  }
+
+  let event: LemonSqueezyWebhookEvent;
+  try {
+    event = JSON.parse(body);
+  } catch {
+    return new Response("Invalid JSON body", { status: 400 });
+  }
   const eventName = event.meta.event_name;
   const attrs = event.data.attributes;
 
@@ -138,7 +146,7 @@ export async function handleLemonSqueezyWebhook(
         await env.DB.prepare(
           `INSERT INTO api_keys (key_hash, client_id, tier, active)
            VALUES (?, ?, ?, 1)`
-        ).bind(hashKey(apiKey), `ls_${attrs.customer_id}`, tier).run();
+        ).bind(await hashKey(apiKey), `ls_${attrs.customer_id}`, tier).run();
       } catch { /* ignore duplicate */ }
 
       logger.info("API key generated for new subscription", {
@@ -262,24 +270,25 @@ export async function handleGetApiKey(
     }, { status: 404 });
   }
 
-  // Mask the API key for security (show first 8 and last 4 chars)
+  // SECURITY: Only show masked key — full key is sent via email by Lemonsqueezy
   const masked = data.apiKey.slice(0, 8) + "..." + data.apiKey.slice(-4);
 
   return Response.json({
     email,
     tier: data.tier,
-    apiKey: data.apiKey,
-    apiKeyMasked: masked,
+    apiKeyPreview: masked,
     subscriptionId: data.subscriptionId,
-    usage: {
-      configure: `Add header "X-API-Key: ${masked}" to your MCP requests`,
-      claude_config: {
+    message: "Your full API key was sent to your email when you subscribed. Use the preview above to verify you have the right key.",
+    setup: {
+      step1: "Copy your full API key from your Lemonsqueezy purchase email",
+      step2: "Add this to your Claude MCP config file:",
+      config: {
         mcpServers: {
           whatsapp: {
-            type: "sse",
+            type: "url",
             url: "https://whatsapp-mcp-server.eosspirit.workers.dev/mcp",
             headers: {
-              "X-API-Key": data.apiKey,
+              "X-API-Key": "YOUR_FULL_API_KEY_HERE",
             },
           },
         },
@@ -299,15 +308,12 @@ async function generateApiKey(): Promise<string> {
   return `wmcp_${key}`;
 }
 
-function hashKey(apiKey: string): string {
-  // Simple hash for DB storage (not the actual key)
-  let hash = 0;
-  for (let i = 0; i < apiKey.length; i++) {
-    const char = apiKey.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash |= 0;
-  }
-  return `hash_${Math.abs(hash).toString(36)}`;
+async function hashKey(apiKey: string): Promise<string> {
+  const encoded = new TextEncoder().encode(apiKey);
+  const digest = await crypto.subtle.digest("SHA-256", encoded);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function getTierFromVariant(

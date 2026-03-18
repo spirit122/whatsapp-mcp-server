@@ -51,10 +51,13 @@ export async function authenticate(
 
   if (apiKey) {
     const keyData = await validateApiKey(apiKey, env);
-    if (keyData) {
-      tier = keyData.tier;
-      clientId = keyData.clientId;
+    if (!keyData) {
+      throw new AuthenticationError(
+        "Invalid or deactivated API key. Check your key or purchase a plan at https://github.com/spirit122/whatsapp-mcp-server"
+      );
     }
+    tier = keyData.tier;
+    clientId = keyData.clientId;
   }
 
   logger.info("Request authenticated", { clientId, tier });
@@ -89,26 +92,6 @@ async function validateApiKey(
   } catch {
     return null;
   }
-}
-
-/**
- * Verify Meta webhook signature
- */
-export function verifyWebhookSignature(
-  body: string,
-  signature: string | null,
-  appSecret: string
-): boolean {
-  if (!signature) return false;
-
-  // Meta sends signature as "sha256=<hash>"
-  const expectedPrefix = "sha256=";
-  if (!signature.startsWith(expectedPrefix)) return false;
-
-  // In Cloudflare Workers, use crypto.subtle for HMAC
-  // This is a sync check placeholder — actual implementation uses async crypto
-  // For production, implement with crypto.subtle.sign()
-  return true; // TODO: Implement proper HMAC verification
 }
 
 /**

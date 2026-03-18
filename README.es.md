@@ -34,9 +34,9 @@ Este servidor MCP te permite controlar WhatsApp Business directamente desde **Cl
 | Soporte | Comunidad | Email | Prioritario + SLA |
 | **Total herramientas** | **21** | **35** | **35** |
 
-**Comprar Pro:** [Haz clic aqui para suscribirte](https://spirit122.lemonsqueezy.com/checkout/buy/1c83b498-baa7-41da-8500-601996487f86)
+**Comprar Pro:** [Haz clic aqui para suscribirte](https://spirit122.lemonsqueezy.com/checkout/buy/e8a99ad7-b092-4902-9efd-1b26a16165ac)
 
-**Comprar Enterprise:** [Haz clic aqui para suscribirte](https://spirit122.lemonsqueezy.com/checkout/buy/e8a99ad7-b092-4902-9efd-1b26a16165ac)
+**Comprar Enterprise:** [Haz clic aqui para suscribirte](https://spirit122.lemonsqueezy.com/checkout/buy/1c83b498-baa7-41da-8500-601996487f86)
 
 ### Paso 2: Obtener tu API Key
 
@@ -56,7 +56,7 @@ Agrega esto a tu archivo de configuracion MCP de Claude:
 {
   "mcpServers": {
     "whatsapp": {
-      "type": "sse",
+      "type": "url",
       "url": "https://whatsapp-mcp-server.eosspirit.workers.dev/mcp"
     }
   }
@@ -68,7 +68,7 @@ Agrega esto a tu archivo de configuracion MCP de Claude:
 {
   "mcpServers": {
     "whatsapp": {
-      "type": "sse",
+      "type": "url",
       "url": "https://whatsapp-mcp-server.eosspirit.workers.dev/mcp",
       "headers": {
         "X-API-Key": "TU_API_KEY_AQUI"

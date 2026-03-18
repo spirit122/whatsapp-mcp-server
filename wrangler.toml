@@ -6,13 +6,13 @@ compatibility_flags = ["nodejs_compat"]
 # ── KV Namespace (cache de tokens, templates) ──
 [[kv_namespaces]]
 binding = "CACHE"
-id = "d14339e68cb64522bf09f1ce5904f0a8"
+id = "YOUR_KV_NAMESPACE_ID"
 
 # ── D1 Database (logs, analytics, conversations) ──
 [[d1_databases]]
 binding = "DB"
 database_name = "whatsapp-mcp-db"
-database_id = "68e1a19d-94f0-4b98-a890-626111aac126"
+database_id = "YOUR_D1_DATABASE_ID"
 
 # ── Durable Objects (webhooks, sessions) ──
 [durable_objects]
