@@ -388,26 +388,36 @@
   <section class="code-section">
     <div class="container">
       <h2 class="section-title">Ready in 2 Minutes</h2>
-      <p class="section-sub">Add to your Claude configuration and start messaging</p>
+      <p class="section-sub">Add to your Claude Desktop configuration and start messaging</p>
       <div class="code-block">
-<pre><span class="comment">// Claude MCP Configuration</span>
+<pre><span class="comment">// Step 1: Open Claude Desktop</span>
+<span class="comment">// Step 2: Go to Settings (gear icon) > Developer > Edit Config</span>
+<span class="comment">// Step 3: Paste this in your claude_desktop_config.json:</span>
+
 {
   <span class="string">"mcpServers"</span>: {
     <span class="string">"whatsapp"</span>: {
-      <span class="string">"type"</span>: <span class="string">"sse"</span>,
-      <span class="string">"url"</span>: <span class="string">"https://your-server.workers.dev/mcp"</span>
+      <span class="string">"type"</span>: <span class="string">"url"</span>,
+      <span class="string">"url"</span>: <span class="string">"https://whatsapp-mcp-server.eosspirit.workers.dev/mcp"</span>
     }
   }
 }
 
-<span class="comment">// Then just ask Claude:</span>
-<span class="comment">// "Send a message to +52 155 1234 5678 saying</span>
+<span class="comment">// Step 4: Restart Claude Desktop</span>
+<span class="comment">// Step 5: Ask Claude anything:</span>
+<span class="comment">//</span>
+<span class="comment">// "Send a message to +56 9 1234 5678 saying</span>
 <span class="comment">//  the order is ready for pickup"</span>
 <span class="comment">//</span>
-<span class="comment">// "Show me messages from today"</span>
+<span class="comment">// "Show me my business profile"</span>
 <span class="comment">//</span>
-<span class="comment">// "What's my phone quality rating?"</span></pre>
+<span class="comment">// "What templates do I have?"</span></pre>
       </div>
+      <p class="section-sub" style="margin-top: 24px; font-size: 0.9rem;">
+        <strong>Where is the config file?</strong><br>
+        Windows: <code style="background:#1f2937;padding:2px 8px;border-radius:4px;">%APPDATA%\Claude\claude_desktop_config.json</code><br>
+        Mac: <code style="background:#1f2937;padding:2px 8px;border-radius:4px;">~/Library/Application Support/Claude/claude_desktop_config.json</code>
+      </p>
     </div>
   </section>
 

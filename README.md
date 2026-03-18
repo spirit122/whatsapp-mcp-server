@@ -47,9 +47,16 @@ You can also retrieve it at any time:
 GET https://whatsapp-mcp-server.eosspirit.workers.dev/billing/api-key?email=YOUR_EMAIL
 ```
 
-### Step 3: Connect to Claude
+### Step 3: Connect to Claude Desktop
 
-Add this to your Claude MCP configuration file:
+1. Open **Claude Desktop**
+2. Click the **gear icon** (Settings) > **Developer** > **Edit Config**
+3. This opens `claude_desktop_config.json`. Paste the config below.
+4. **Restart Claude Desktop**
+
+> **Config file location:**
+> - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+> - **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 **Free tier** (no API key needed):
 ```json
