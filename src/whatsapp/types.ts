@@ -25,6 +25,11 @@ export interface Env {
   MCP_SERVER_NAME: string;
   MCP_SERVER_VERSION: string;
   LOG_LEVEL: string;
+
+  // Billing (Lemonsqueezy)
+  LEMONSQUEEZY_WEBHOOK_SECRET: string;
+  PRO_VARIANT_IDS?: string;
+  ENTERPRISE_VARIANT_IDS?: string;
 }
 
 // ── Message Types ──

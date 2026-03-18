@@ -5,7 +5,7 @@
 // The most complete MCP Server for WhatsApp Business
 // 35 tools · 8 modules · Hosted on Cloudflare
 //
-// By Galidar Studio
+// By spirit122
 // ─────────────────────────────────────────────
 
 import type { Env, WebhookPayload } from "./whatsapp/types";
@@ -14,6 +14,7 @@ import { authenticate, verifyWebhookSignatureAsync } from "./auth/middleware";
 import { RateLimiter, RATE_LIMITS } from "./utils/rate-limiter";
 import { Logger } from "./utils/logger";
 import { errorToMcpResult } from "./utils/errors";
+import { handleLemonSqueezyWebhook, handleGetApiKey } from "./billing/lemonsqueezy";
 
 // Re-export Durable Objects so Cloudflare can find them
 export { WebhookReceiver } from "./durable-objects/webhook-receiver";
@@ -96,6 +97,18 @@ export default {
         return await handleWebhookEvent(request, env, logger, ctx);
       }
 
+      // ── Route: Lemonsqueezy Billing Webhook ──
+      if (url.pathname === "/billing/webhook" && request.method === "POST") {
+        const result = await handleLemonSqueezyWebhook(request, env, logger);
+        return corsResponse(result);
+      }
+
+      // ── Route: Get API Key (customer portal) ──
+      if (url.pathname === "/billing/api-key" && request.method === "GET") {
+        const result = await handleGetApiKey(request, env);
+        return corsResponse(result);
+      }
+
       // ── Route: API Info ──
       if (url.pathname === "/tools") {
         const tools = getAllToolDefinitions();
@@ -122,6 +135,8 @@ export default {
               "GET  /sse       — MCP SSE endpoint",
               "GET  /webhook   — WhatsApp webhook verification",
               "POST /webhook   — WhatsApp webhook events",
+              "POST /billing/webhook  — Lemonsqueezy payment webhooks",
+              "GET  /billing/api-key  — Retrieve API key by email",
             ],
           },
           { status: 404 }
