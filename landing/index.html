@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Business MCP Server — Connect AI to WhatsApp</title>
+  <meta name="description" content="The most complete MCP Server for WhatsApp Business. 35 tools, 8 modules. Send messages, receive webhooks, manage templates, track analytics — all from Claude.">
+  <meta property="og:title" content="WhatsApp Business MCP Server">
+  <meta property="og:description" content="35 tools to connect Claude AI with WhatsApp Business. Hosted on Cloudflare Workers.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green: #25D366;
+      --green-dark: #128C7E;
+      --dark: #0a0f1c;
+      --card: #111827;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #25D366;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10, 15, 28, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo span { color: var(--green); }
+    .nav-cta {
+      background: var(--green);
+      color: #000;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: transform 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(37, 211, 102, 0.1);
+      color: var(--green);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      border: 1px solid rgba(37, 211, 102, 0.2);
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero h1 .highlight { color: var(--green); }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto 40px;
+    }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--green);
+      color: #000;
+      padding: 14px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37, 211, 102, 0.3); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      padding: 14px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--green); color: var(--green); }
+
+    /* ── Stats ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      padding: 60px 0;
+    }
+    .stat {
+      text-align: center;
+      padding: 24px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .stat-number { font-size: 2.5rem; font-weight: 800; color: var(--green); }
+    .stat-label { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+
+    /* ── Modules ── */
+    .modules { padding: 80px 0; }
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 48px;
+    }
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .module-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      transition: border-color 0.2s;
+    }
+    .module-card:hover { border-color: var(--green); }
+    .module-card .icon { font-size: 2rem; margin-bottom: 12px; }
+    .module-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+    .module-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 12px; }
+    .module-card .tools-count {
+      display: inline-block;
+      background: rgba(37, 211, 102, 0.1);
+      color: var(--green);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .pro-badge {
+      display: inline-block;
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+
+    /* ── Pricing ── */
+    .pricing { padding: 80px 0; }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px;
+      text-align: center;
+    }
+    .price-card.popular {
+      border-color: var(--green);
+      position: relative;
+    }
+    .price-card.popular::before {
+      content: 'POPULAR';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: #000;
+      padding: 4px 16px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+    .price-card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .price { font-size: 3rem; font-weight: 800; margin: 16px 0 4px; }
+    .price span { font-size: 1rem; color: var(--muted); font-weight: 400; }
+    .price-card ul {
+      list-style: none;
+      text-align: left;
+      margin: 24px 0;
+    }
+    .price-card li {
+      padding: 8px 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .price-card li::before { content: '\2713'; color: var(--green); font-weight: 700; }
+    .price-card .btn-primary { display: block; text-align: center; }
+
+    /* ── Code Preview ── */
+    .code-section { padding: 80px 0; }
+    .code-block {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+      max-width: 720px;
+      margin: 0 auto;
+      overflow-x: auto;
+    }
+    .code-block pre {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: #e6edf3;
+    }
+    .code-block .comment { color: #8b949e; }
+    .code-block .string { color: #a5d6ff; }
+    .code-block .keyword { color: #ff7b72; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    footer a { color: var(--green); text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+      .hero h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="container">
+      <div class="logo"><span>WA</span> MCP Server</div>
+      <a href="https://github.com/galidar/whatsapp-mcp-server" class="nav-cta">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">Model Context Protocol</div>
+      <h1>Connect <span class="highlight">Claude AI</span> to<br>WhatsApp Business</h1>
+      <p>The most complete MCP server for WhatsApp. Send messages, receive webhooks, manage templates, track analytics. 35 tools. Zero installation.</p>
+      <div class="hero-buttons">
+        <a href="https://github.com/galidar/whatsapp-mcp-server" class="btn-primary">Start Free</a>
+        <a href="#pricing" class="btn-secondary">View Pricing</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="container">
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-number">35</div>
+        <div class="stat-label">MCP Tools</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">8</div>
+        <div class="stat-label">Modules</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">&lt;50ms</div>
+        <div class="stat-label">Latency (Edge)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">21</div>
+        <div class="stat-label">Free Tools</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modules -->
+  <section class="modules">
+    <div class="container">
+      <h2 class="section-title">8 Powerful Modules</h2>
+      <p class="section-sub">Everything you need to automate WhatsApp Business with AI</p>
+      <div class="module-grid">
+        <div class="module-card">
+          <div class="icon">💬</div>
+          <h3>Messages</h3>
+          <p>Text, images, video, audio, documents, stickers, locations, contacts, reactions.</p>
+          <span class="tools-count">10 tools</span>
+        </div>
+        <div class="module-card">
+          <div class="icon">🔘</div>
+          <h3>Interactive <span class="pro-badge">PRO</span></h3>
+          <p>Reply buttons, list menus, CTA URLs, product catalogs, multi-product views.</p>
+          <span class="tools-count">5 tools</span>
+        </div>
+        <div class="module-card">
+          <div class="icon">📋</div>
+          <h3>Templates</h3>
+          <p>Send, create, list, delete templates. Track approval status from Meta.</p>
+          <span class="tools-count">5 tools</span>
+        </div>
+        <div class="module-card">
+          <div class="icon">📁</div>
+          <h3>Media</h3>
+          <p>Upload files up to 100MB. Get download URLs. Manage uploaded media.</p>
+          <span class="tools-count">3 tools</span>
+        </div>
+        <div class="module-card">
+          <div class="icon">📥</div>
+          <h3>Webhooks <span class="pro-badge">PRO</span></h3>
+          <p>Receive messages, track delivery status, search conversations. No other MCP does this.</p>
+          <span class="tools-count">3 tools</span>
+        </div>
+        <div class="module-card">
+          <div class="icon">🏢</div>
+          <h3>Business Profile</h3>
+          <p>View and update your profile, description, email, websites. List phone numbers.</p>
+          <span class="tools-count">3 tools</span>
+        </div>
+        <div class="module-card">
+          <div class="icon">📝</div>
+          <h3>WhatsApp Flows <span class="pro-badge">PRO</span></h3>
+          <p>Create interactive forms, surveys, and sign-ups directly inside WhatsApp chat.</p>
+          <span class="tools-count">2 tools</span>
+        </div>
+        <div class="module-card">
+          <div class="icon">📊</div>
+          <h3>Analytics <span class="pro-badge">PRO</span></h3>
+          <p>Conversation metrics, phone quality rating, messaging limits, delivery stats.</p>
+          <span class="tools-count">4 tools</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code Preview -->
+  <section class="code-section">
+    <div class="container">
+      <h2 class="section-title">Ready in 2 Minutes</h2>
+      <p class="section-sub">Add to your Claude configuration and start messaging</p>
+      <div class="code-block">
+<pre><span class="comment">// Claude MCP Configuration</span>
+{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"whatsapp"</span>: {
+      <span class="string">"type"</span>: <span class="string">"sse"</span>,
+      <span class="string">"url"</span>: <span class="string">"https://your-server.workers.dev/mcp"</span>
+    }
+  }
+}
+
+<span class="comment">// Then just ask Claude:</span>
+<span class="comment">// "Send a message to +52 155 1234 5678 saying</span>
+<span class="comment">//  the order is ready for pickup"</span>
+<span class="comment">//</span>
+<span class="comment">// "Show me messages from today"</span>
+<span class="comment">//</span>
+<span class="comment">// "What's my phone quality rating?"</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <h2 class="section-title">Simple Pricing</h2>
+      <p class="section-sub">Start free. Upgrade when you need more.</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <h3>Free</h3>
+          <div class="price">$0</div>
+          <ul>
+            <li>21 core tools</li>
+            <li>Messages, templates, media</li>
+            <li>Business profile management</li>
+            <li>100 requests/hour</li>
+            <li>Community support</li>
+          </ul>
+          <a href="https://github.com/galidar/whatsapp-mcp-server" class="btn-primary">Get Started</a>
+        </div>
+        <div class="price-card popular">
+          <h3>Pro</h3>
+          <div class="price">$29<span>/mo</span></div>
+          <ul>
+            <li>All 35 tools</li>
+            <li>Webhooks (receive messages)</li>
+            <li>Interactive messages</li>
+            <li>WhatsApp Flows</li>
+            <li>Analytics & quality monitoring</li>
+            <li>1,000 requests/hour</li>
+            <li>Email support</li>
+          </ul>
+          <a href="#" class="btn-primary">Upgrade to Pro</a>
+        </div>
+        <div class="price-card">
+          <h3>Enterprise</h3>
+          <div class="price">$99<span>/mo</span></div>
+          <ul>
+            <li>Everything in Pro</li>
+            <li>Multi-number support</li>
+            <li>10,000 requests/hour</li>
+            <li>Custom integrations</li>
+            <li>Priority support & SLA</li>
+            <li>Dedicated onboarding</li>
+          </ul>
+          <a href="#" class="btn-primary">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>Built by <a href="https://galidar.com">Galidar Studio</a> &middot; Powered by Cloudflare Workers &middot; <a href="https://github.com/galidar/whatsapp-mcp-server">GitHub</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>

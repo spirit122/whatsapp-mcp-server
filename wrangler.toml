@@ -1,0 +1,50 @@
+name = "whatsapp-mcp-server"
+main = "src/index.ts"
+compatibility_date = "2025-03-15"
+compatibility_flags = ["nodejs_compat"]
+
+# ── KV Namespace (cache de tokens, templates) ──
+[[kv_namespaces]]
+binding = "CACHE"
+id = "d14339e68cb64522bf09f1ce5904f0a8"
+
+# ── D1 Database (logs, analytics, conversations) ──
+[[d1_databases]]
+binding = "DB"
+database_name = "whatsapp-mcp-db"
+database_id = "68e1a19d-94f0-4b98-a890-626111aac126"
+
+# ── Durable Objects (webhooks, sessions) ──
+[durable_objects]
+bindings = [
+  { name = "WEBHOOK_RECEIVER", class_name = "WebhookReceiver" },
+  { name = "SESSION_MANAGER", class_name = "SessionManager" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["WebhookReceiver", "SessionManager"]
+
+# ── Environment Variables ──
+[vars]
+WHATSAPP_API_VERSION = "v21.0"
+WHATSAPP_API_BASE_URL = "https://graph.facebook.com"
+MCP_SERVER_NAME = "whatsapp-business-mcp"
+MCP_SERVER_VERSION = "1.0.0"
+LOG_LEVEL = "info"
+
+# ── Secrets (set via `wrangler secret put`) ──
+# WHATSAPP_ACCESS_TOKEN
+# WHATSAPP_PHONE_NUMBER_ID
+# WHATSAPP_BUSINESS_ACCOUNT_ID
+# WHATSAPP_WEBHOOK_VERIFY_TOKEN
+# META_APP_SECRET
+
+# ── Production environment (uncomment when you have a custom domain) ──
+# [env.production]
+# name = "whatsapp-mcp-server-prod"
+# routes = [
+#   { pattern = "whatsapp-mcp.yourdomain.com", custom_domain = true }
+# ]
+# [env.production.vars]
+# LOG_LEVEL = "warn"
