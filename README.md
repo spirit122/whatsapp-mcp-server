@@ -2,7 +2,7 @@
 
 The most complete MCP (Model Context Protocol) server for WhatsApp Business Cloud API. **35 tools** across **8 modules** — hosted on Cloudflare Workers.
 
-**Built by [Galidar Studio](https://galidar.com)**
+**Built by [spirit122](https://github.com/spirit122)**
 
 ---
 
@@ -34,7 +34,7 @@ The most complete MCP (Model Context Protocol) server for WhatsApp Business Clou
 ### 2. Clone & Install
 
 ```bash
-git clone https://github.com/galidar/whatsapp-mcp-server.git
+git clone https://github.com/spirit122/whatsapp-mcp-server.git
 cd whatsapp-mcp-server
 npm install
 ```
@@ -229,4 +229,4 @@ Client (Claude/LLM) → Cloudflare Worker → WhatsApp Cloud API
 
 ## License
 
-MIT - Built by [Galidar Studio](https://galidar.com)
+MIT - Built by [spirit122](https://github.com/spirit122)
