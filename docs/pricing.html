@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — WhatsApp MCP Server</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo"><span>WA</span> MCP Server</a>
+      <ul class="nav-links">
+        <li><a href="getting-started.html">Get Started</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="pricing.html" class="active">Pricing</a></li>
+        <li><a href="self-hosting.html">Self-Host</a></li>
+        <li><a href="https://github.com/spirit122/whatsapp-mcp-server" class="nav-cta">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header" style="text-align:center;">
+      <h1>Simple Pricing</h1>
+      <p>Start free. Upgrade when you need more power.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="price-card">
+        <h3>Free</h3>
+        <div class="price">$0</div>
+        <ul>
+          <li>21 core tools</li>
+          <li>Send messages (text, media, docs)</li>
+          <li>Manage templates</li>
+          <li>Upload/download media</li>
+          <li>Business profile management</li>
+          <li>100 requests/hour</li>
+          <li>Community support (GitHub)</li>
+        </ul>
+        <a href="getting-started.html" class="btn-primary" style="display:block;text-align:center;">Get Started Free</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="price-card popular">
+        <h3>Pro</h3>
+        <div class="price">$27,000<span> CLP/mo</span></div>
+        <ul>
+          <li>All 35 tools</li>
+          <li>Everything in Free, plus:</li>
+          <li>Interactive messages (buttons, lists)</li>
+          <li>Product catalog messages</li>
+          <li>Receive messages (webhooks)</li>
+          <li>Search conversations</li>
+          <li>WhatsApp Flows (forms/surveys)</li>
+          <li>Analytics &amp; quality monitoring</li>
+          <li>1,000 requests/hour</li>
+          <li>Email support</li>
+        </ul>
+        <a href="https://spirit122.lemonsqueezy.com/checkout/buy/e8a99ad7-b092-4902-9efd-1b26a16165ac" class="btn-primary" style="display:block;text-align:center;">Subscribe to Pro</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price">$92,000<span> CLP/mo</span></div>
+        <ul>
+          <li>Everything in Pro, plus:</li>
+          <li>Multi-number support</li>
+          <li>10,000 requests/hour</li>
+          <li>Custom integrations</li>
+          <li>Priority support with SLA</li>
+          <li>Dedicated onboarding</li>
+          <li>Your own phone number setup</li>
+        </ul>
+        <a href="https://spirit122.lemonsqueezy.com/checkout/buy/1c83b498-baa7-41da-8500-601996487f86" class="btn-primary" style="display:block;text-align:center;">Subscribe to Enterprise</a>
+      </div>
+    </div>
+
+    <div class="narrow" style="margin:0 auto;">
+      <!-- After Purchase -->
+      <h2>After You Purchase</h2>
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>Check your email</h4>
+          <p>You'll receive a confirmation email from Lemonsqueezy with your <strong>license key</strong>. This is your API key.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>Verify your key (optional)</h4>
+          <p>Visit <code>https://whatsapp-mcp-server.eosspirit.workers.dev/billing/api-key?email=YOUR_EMAIL</code> to confirm your subscription is active.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>Add it to Claude Desktop</h4>
+          <p>Add the <code>X-API-Key</code> header to your config. See <a href="getting-started.html">Getting Started</a> for detailed instructions.</p>
+        </div>
+      </div>
+
+      <!-- Comparison -->
+      <h2>Detailed Comparison</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th>Pro</th>
+            <th>Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Text, image, video, audio, document messages</td><td>10 tools</td><td>10 tools</td><td>10 tools</td></tr>
+          <tr><td>Templates (send, create, list, delete, status)</td><td>5 tools</td><td>5 tools</td><td>5 tools</td></tr>
+          <tr><td>Media management (upload, download, delete)</td><td>3 tools</td><td>3 tools</td><td>3 tools</td></tr>
+          <tr><td>Business profile &amp; phone numbers</td><td>3 tools</td><td>3 tools</td><td>3 tools</td></tr>
+          <tr><td>Interactive messages (buttons, lists, products)</td><td>-</td><td>5 tools</td><td>5 tools</td></tr>
+          <tr><td>Webhooks (receive messages, delivery tracking)</td><td>-</td><td>3 tools</td><td>3 tools</td></tr>
+          <tr><td>WhatsApp Flows (forms, surveys)</td><td>-</td><td>2 tools</td><td>2 tools</td></tr>
+          <tr><td>Analytics &amp; quality monitoring</td><td>-</td><td>4 tools</td><td>4 tools</td></tr>
+          <tr><td>Rate limit</td><td>100/hr</td><td>1,000/hr</td><td>10,000/hr</td></tr>
+          <tr><td>Multi-number support</td><td>-</td><td>-</td><td>Yes</td></tr>
+          <tr><td>Custom integrations</td><td>-</td><td>-</td><td>Yes</td></tr>
+          <tr><td>Support</td><td>GitHub Issues</td><td>Email</td><td>Priority + SLA</td></tr>
+          <tr><td><strong>Total tools</strong></td><td><strong>21</strong></td><td><strong>35</strong></td><td><strong>35</strong></td></tr>
+        </tbody>
+      </table>
+
+      <!-- FAQ -->
+      <h2>FAQ</h2>
+
+      <div class="card">
+        <h4>Can I cancel anytime?</h4>
+        <p>Yes. Cancel through Lemonsqueezy at any time. Your API key stays active until the end of the billing period.</p>
+      </div>
+
+      <div class="card">
+        <h4>What payment methods do you accept?</h4>
+        <p>Credit/debit cards (Visa, Mastercard, Amex) and PayPal via Lemonsqueezy.</p>
+      </div>
+
+      <div class="card">
+        <h4>Do I need my own WhatsApp Business account?</h4>
+        <p>No. All plans include access to a shared test phone number. Enterprise includes setup of your own business number.</p>
+      </div>
+
+      <div class="card">
+        <h4>What if I lose my API key?</h4>
+        <p>Check your Lemonsqueezy purchase email, or verify at: <code>/billing/api-key?email=YOUR_EMAIL</code></p>
+      </div>
+
+      <div class="card">
+        <h4>Is there a free trial for Pro?</h4>
+        <p>The free tier with 21 tools serves as your trial. Upgrade when you need webhooks, analytics, or interactive messages.</p>
+      </div>
+
+      <div class="card">
+        <h4>Can I self-host instead?</h4>
+        <p>Yes! The code is open source (MIT). See the <a href="self-hosting.html">Self-Hosting guide</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>Built by <a href="https://github.com/spirit122">spirit122</a> &middot; <a href="https://github.com/spirit122/whatsapp-mcp-server">GitHub</a> &middot; Powered by Cloudflare Workers</p>
+    </div>
+  </footer>
+
+</body>
+</html>

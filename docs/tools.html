@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All 35 Tools — WhatsApp MCP Server</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo"><span>WA</span> MCP Server</a>
+      <ul class="nav-links">
+        <li><a href="getting-started.html">Get Started</a></li>
+        <li><a href="tools.html" class="active">Tools</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="self-hosting.html">Self-Host</a></li>
+        <li><a href="https://github.com/spirit122/whatsapp-mcp-server" class="nav-cta">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container narrow">
+    <div class="page-header">
+      <h1>All 35 Tools</h1>
+      <p>Complete reference for every tool available in the WhatsApp MCP Server.</p>
+      <p style="margin-top:8px;font-size:0.9rem;"><span class="badge badge-free">FREE</span> = Available in free tier &nbsp; <span class="badge badge-pro">PRO</span> = Requires Pro or Enterprise plan</p>
+    </div>
+
+    <!-- Module 1 -->
+    <h2>Module 1: Messages (10 tools) <span class="badge badge-free">FREE</span></h2>
+    <p>Send any type of message to WhatsApp contacts.</p>
+
+    <div class="card">
+      <h4><code>send_text_message</code></h4>
+      <p>Send a text message. Supports URL preview and replying to a specific message.</p>
+<pre>Ask Claude: "Send a message to +56912345678 saying
+the order #1234 is ready for pickup"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>send_image_message</code></h4>
+      <p>Send an image via URL or uploaded media ID. Supports captions.</p>
+<pre>Ask Claude: "Send the image at https://example.com/product.jpg
+to +56912345678 with caption 'New arrival!'"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>send_video_message</code></h4>
+      <p>Send a video (MP4, 3GPP) with optional caption.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>send_audio_message</code></h4>
+      <p>Send an audio file (AAC, MP3, OGG, AMR).</p>
+    </div>
+
+    <div class="card">
+      <h4><code>send_document_message</code></h4>
+      <p>Send a document (PDF, etc.) with optional filename and caption.</p>
+<pre>Ask Claude: "Send the invoice at https://example.com/invoice.pdf
+to +56912345678 with filename 'Invoice-March-2026.pdf'"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>send_sticker_message</code></h4>
+      <p>Send a WEBP sticker via URL or media ID.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>send_location_message</code></h4>
+      <p>Send a location pin with coordinates, name, and address.</p>
+<pre>Ask Claude: "Send our store location to +56912345678:
+latitude -33.45, longitude -70.65, name 'Our Store'"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>send_contact_message</code></h4>
+      <p>Send one or more contact cards with name, phone, email.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>send_reaction</code></h4>
+      <p>React to a received message with an emoji.</p>
+<pre>Ask Claude: "React with a thumbs up to the last message"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>mark_as_read</code></h4>
+      <p>Mark a message as read (shows blue checkmarks to the sender).</p>
+    </div>
+
+    <!-- Module 2 -->
+    <h2>Module 2: Interactive Messages (5 tools) <span class="badge badge-pro">PRO</span></h2>
+    <p>Rich interactive messages with buttons, lists, and product catalogs.</p>
+
+    <div class="card">
+      <h4><code>send_button_message</code></h4>
+      <p>Send a message with up to 3 reply buttons. Great for quick choices like "Yes / No / Maybe".</p>
+<pre>Ask Claude: "Send a message to +56912345678 asking
+'Do you want to confirm your appointment?' with
+buttons: Confirm, Reschedule, Cancel"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>send_list_message</code></h4>
+      <p>Send a scrollable list menu organized in sections. Users tap a button to see options.</p>
+<pre>Ask Claude: "Send a menu to +56912345678 with sections:
+Drinks (Coffee $3, Tea $2.50) and
+Food (Sandwich $5, Salad $4)"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>send_cta_url_button</code></h4>
+      <p>Send a message with a call-to-action button that opens a URL.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>send_product_message</code></h4>
+      <p>Send a single product from your connected catalog.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>send_product_list_message</code></h4>
+      <p>Send a multi-product message showing several items from your catalog in sections.</p>
+    </div>
+
+    <!-- Module 3 -->
+    <h2>Module 3: Templates (5 tools) <span class="badge badge-free">FREE</span></h2>
+    <p>Manage message templates required for initiating conversations outside the 24h window.</p>
+
+    <div class="card">
+      <h4><code>send_template_message</code></h4>
+      <p>Send an approved template with dynamic parameters, media headers, and buttons.</p>
+<pre>Ask Claude: "Send the hello_world template to +56912345678"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>list_templates</code></h4>
+      <p>List all templates with their approval status (APPROVED, PENDING, REJECTED).</p>
+<pre>Ask Claude: "Show me all my WhatsApp templates"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>create_template</code></h4>
+      <p>Create a new template. Supports categories: MARKETING, UTILITY, AUTHENTICATION.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>delete_template</code></h4>
+      <p>Delete a template by name.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>get_template_status</code></h4>
+      <p>Check the current approval status of a specific template.</p>
+    </div>
+
+    <!-- Module 4 -->
+    <h2>Module 4: Media (3 tools) <span class="badge badge-free">FREE</span></h2>
+    <p>Upload, download, and manage media files on WhatsApp servers.</p>
+
+    <div class="card">
+      <h4><code>upload_media</code></h4>
+      <p>Upload a file from a URL to WhatsApp servers. Returns a media ID for use in messages. Max 100MB.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>get_media_url</code></h4>
+      <p>Get the download URL for an uploaded media file. URLs expire after 5 minutes.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>delete_media</code></h4>
+      <p>Delete a previously uploaded media file.</p>
+    </div>
+
+    <!-- Module 5 -->
+    <h2>Module 5: Webhooks (3 tools) <span class="badge badge-pro">PRO</span></h2>
+    <p>Receive and search incoming messages. <strong>No other MCP server offers this.</strong></p>
+
+    <div class="card">
+      <h4><code>get_recent_messages</code></h4>
+      <p>Get messages received from customers. Filter by phone number or date.</p>
+<pre>Ask Claude: "Show me messages from today"
+Ask Claude: "Show me messages from +56912345678"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>get_message_status_updates</code></h4>
+      <p>Track delivery status of sent messages: sent, delivered, read, or failed.</p>
+<pre>Ask Claude: "Show me which messages failed to deliver"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>search_conversations</code></h4>
+      <p>Search through all received messages by text content, phone number, or date range.</p>
+<pre>Ask Claude: "Search for messages containing 'refund'"</pre>
+    </div>
+
+    <!-- Module 6 -->
+    <h2>Module 6: Business Profile (3 tools) <span class="badge badge-free">FREE</span></h2>
+    <p>View and manage your WhatsApp Business profile and phone numbers.</p>
+
+    <div class="card">
+      <h4><code>get_business_profile</code></h4>
+      <p>Get your profile info: about, address, description, email, websites.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>update_business_profile</code></h4>
+      <p>Update any field of your business profile.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>get_phone_numbers</code></h4>
+      <p>List all registered phone numbers with quality rating and messaging limits.</p>
+    </div>
+
+    <!-- Module 7 -->
+    <h2>Module 7: WhatsApp Flows (2 tools) <span class="badge badge-pro">PRO</span></h2>
+    <p>Create interactive forms, surveys, and sign-ups directly inside WhatsApp chat.</p>
+
+    <div class="card">
+      <h4><code>create_flow</code></h4>
+      <p>Create a new WhatsApp Flow (multi-step interactive experience).</p>
+    </div>
+
+    <div class="card">
+      <h4><code>send_flow_message</code></h4>
+      <p>Send a Flow to a customer. They see an interactive form directly in the chat.</p>
+    </div>
+
+    <!-- Module 8 -->
+    <h2>Module 8: Analytics (4 tools) <span class="badge badge-pro">PRO</span></h2>
+    <p>Monitor your WhatsApp Business performance, quality, and limits.</p>
+
+    <div class="card">
+      <h4><code>get_conversation_analytics</code></h4>
+      <p>Get conversation metrics: messages sent, delivered, costs, broken down by time period.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>get_phone_quality_rating</code></h4>
+      <p>Check phone quality: GREEN (good), YELLOW (warning), RED (at risk of being blocked).</p>
+<pre>Ask Claude: "What's my phone number quality rating?"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>get_messaging_limits</code></h4>
+      <p>See your current tier: 250 / 1K / 10K / 100K / Unlimited unique contacts per 24h.</p>
+    </div>
+
+    <div class="card">
+      <h4><code>get_delivery_stats</code></h4>
+      <p>Get delivery statistics for a date range: how many sent, delivered, read, and failed.</p>
+    </div>
+
+    <div style="margin:48px 0;text-align:center;">
+      <a href="getting-started.html" class="btn-primary">Get Started Now</a>
+      <a href="pricing.html" class="btn-secondary" style="margin-left:12px;">See Pricing</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>Built by <a href="https://github.com/spirit122">spirit122</a> &middot; <a href="https://github.com/spirit122/whatsapp-mcp-server">GitHub</a> &middot; Powered by Cloudflare Workers</p>
+    </div>
+  </footer>
+
+</body>
+</html>

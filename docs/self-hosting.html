@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Hosting Guide — WhatsApp MCP Server</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo"><span>WA</span> MCP Server</a>
+      <ul class="nav-links">
+        <li><a href="getting-started.html">Get Started</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="self-hosting.html" class="active">Self-Host</a></li>
+        <li><a href="https://github.com/spirit122/whatsapp-mcp-server" class="nav-cta">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container narrow">
+    <div class="page-header">
+      <h1>Self-Hosting Guide</h1>
+      <p>Deploy your own instance on Cloudflare Workers with full control over your data and credentials.</p>
+    </div>
+
+    <div class="alert alert-info">
+      <strong>Not technical?</strong> You don't need to self-host. The <a href="getting-started.html">hosted version</a> works out of the box with zero setup. Self-hosting is for developers who want full control.
+    </div>
+
+    <h2>Prerequisites</h2>
+    <ul style="padding-left:20px;margin-bottom:24px;">
+      <li style="color:var(--muted);margin-bottom:8px;"><a href="https://dash.cloudflare.com/sign-up">Cloudflare account</a> (free tier works)</li>
+      <li style="color:var(--muted);margin-bottom:8px;"><a href="https://business.facebook.com/">Meta Business Account</a></li>
+      <li style="color:var(--muted);margin-bottom:8px;">WhatsApp Business API access (via <a href="https://developers.facebook.com">Meta Developer Portal</a>)</li>
+      <li style="color:var(--muted);margin-bottom:8px;">Node.js 18+ and npm</li>
+      <li style="color:var(--muted);">Wrangler CLI (installed automatically via npm)</li>
+    </ul>
+
+    <h2>Step 1: Clone and Install</h2>
+<pre>git clone https://github.com/spirit122/whatsapp-mcp-server.git
+cd whatsapp-mcp-server
+npm install</pre>
+
+    <h2>Step 2: Create Cloudflare Resources</h2>
+
+    <h3>Login to Cloudflare</h3>
+<pre>npx wrangler login</pre>
+    <p>This opens your browser. Sign in and authorize Wrangler.</p>
+
+    <h3>Create D1 Database</h3>
+<pre>npx wrangler d1 create whatsapp-mcp-db</pre>
+    <p>Copy the <code>database_id</code> from the output.</p>
+
+    <h3>Create KV Namespace</h3>
+<pre>npx wrangler kv namespace create CACHE</pre>
+    <p>Copy the <code>id</code> from the output.</p>
+
+    <h3>Update wrangler.toml</h3>
+    <p>Open <code>wrangler.toml</code> and replace the placeholder IDs:</p>
+<pre># Replace YOUR_KV_NAMESPACE_ID with the KV id
+[[kv_namespaces]]
+binding = "CACHE"
+id = "YOUR_KV_NAMESPACE_ID"
+
+# Replace YOUR_D1_DATABASE_ID with the D1 database_id
+[[d1_databases]]
+binding = "DB"
+database_name = "whatsapp-mcp-db"
+database_id = "YOUR_D1_DATABASE_ID"</pre>
+
+    <h2>Step 3: Get WhatsApp API Credentials</h2>
+
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>Create a Meta Developer App</h4>
+        <p>Go to <a href="https://developers.facebook.com/apps/">developers.facebook.com/apps</a> > "Create App" > Business type. Name it anything (avoid "WhatsApp" in the name — Meta blocks it). Select "Connect with customers via WhatsApp".</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Get API credentials</h4>
+        <p>In your app dashboard, go to WhatsApp > API Setup. You'll see:</p>
+        <ul style="margin:8px 0;padding-left:20px;">
+          <li style="color:var(--muted)"><strong>Temporary Access Token</strong> (expires in 24h)</li>
+          <li style="color:var(--muted)"><strong>Phone Number ID</strong> (e.g., 1078241805365049)</li>
+          <li style="color:var(--muted)"><strong>WhatsApp Business Account ID</strong> (e.g., 1833125214038271)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>For a permanent token (recommended)</h4>
+        <p>Go to Meta Business Settings > System Users > Create a System User (Admin) > Generate Token with <code>whatsapp_business_messaging</code> and <code>whatsapp_business_management</code> permissions.</p>
+      </div>
+    </div>
+
+    <h2>Step 4: Set Secrets</h2>
+<pre># Required secrets
+npx wrangler secret put WHATSAPP_ACCESS_TOKEN
+npx wrangler secret put WHATSAPP_PHONE_NUMBER_ID
+npx wrangler secret put WHATSAPP_BUSINESS_ACCOUNT_ID
+
+# For webhook signature verification
+npx wrangler secret put WHATSAPP_WEBHOOK_VERIFY_TOKEN
+npx wrangler secret put META_APP_SECRET
+
+# For billing (optional, only if you want paid tiers)
+npx wrangler secret put LEMONSQUEEZY_WEBHOOK_SECRET</pre>
+
+    <div class="alert alert-warning">
+      Each command will prompt you to paste the value. The value is stored securely and never shown again.
+    </div>
+
+    <h2>Step 5: Run Database Migrations</h2>
+<pre>npx wrangler d1 execute whatsapp-mcp-db --remote --file=./schemas/d1-schema.sql</pre>
+
+    <h2>Step 6: Deploy</h2>
+<pre>npx wrangler deploy</pre>
+
+    <p>You'll see output like:</p>
+<pre>Uploaded whatsapp-mcp-server (5.18 sec)
+Deployed whatsapp-mcp-server triggers (1.08 sec)
+  https://whatsapp-mcp-server.YOUR_SUBDOMAIN.workers.dev</pre>
+
+    <div class="alert alert-success">
+      Your server is now live! Use the URL from the output in your Claude Desktop config.
+    </div>
+
+    <h2>Step 7: Configure Webhooks (Optional)</h2>
+    <p>To receive incoming messages, set up webhooks in Meta:</p>
+
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>Go to Meta Developer Portal</h4>
+        <p>Your App > WhatsApp > Configuration > Webhooks</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Set Webhook URL</h4>
+        <p><code>https://YOUR-WORKER.workers.dev/webhook</code></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>Set Verify Token</h4>
+        <p>Same value you used for <code>WHATSAPP_WEBHOOK_VERIFY_TOKEN</code></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h4>Subscribe to messages</h4>
+        <p>Check the <code>messages</code> field to receive incoming messages.</p>
+      </div>
+    </div>
+
+    <h2>Development</h2>
+<pre># Run locally
+npx wrangler dev
+
+# Run tests (72 tests)
+npm test
+
+# Type check
+npm run typecheck</pre>
+
+    <h2>Architecture</h2>
+<pre>Claude / AI Assistant
+       |
+       v
+Cloudflare Worker (Edge)
+  - MCP Protocol (JSON-RPC)
+  - Auth + API Keys + Tiers
+  - Rate Limiting
+       |
+   +---+---+
+   v       v
+WhatsApp  Durable Objects
+Cloud API (webhooks storage)
+             |
+         +---+---+
+         v       v
+        D1      KV
+      (logs)  (cache)</pre>
+
+    <div style="margin:48px 0;text-align:center;">
+      <a href="https://github.com/spirit122/whatsapp-mcp-server" class="btn-primary">View on GitHub</a>
+      <a href="getting-started.html" class="btn-secondary" style="margin-left:12px;">Use Hosted Version</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>Built by <a href="https://github.com/spirit122">spirit122</a> &middot; <a href="https://github.com/spirit122/whatsapp-mcp-server">GitHub</a> &middot; Powered by Cloudflare Workers</p>
+    </div>
+  </footer>
+
+</body>
+</html>

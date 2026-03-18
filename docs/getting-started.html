@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started — WhatsApp MCP Server</title>
+  <meta name="description" content="Step-by-step guide to connect Claude AI with WhatsApp Business in under 5 minutes.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo"><span>WA</span> MCP Server</a>
+      <ul class="nav-links">
+        <li><a href="getting-started.html" class="active">Get Started</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="self-hosting.html">Self-Host</a></li>
+        <li><a href="https://github.com/spirit122/whatsapp-mcp-server" class="nav-cta">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container narrow">
+    <div class="page-header">
+      <h1>Getting Started</h1>
+      <p>Connect Claude AI to WhatsApp Business in under 5 minutes.</p>
+    </div>
+
+    <!-- Step 1 -->
+    <h2>Step 1: Install Claude Desktop</h2>
+
+    <p>If you don't have Claude Desktop yet, download it first:</p>
+
+    <div style="display:flex;gap:12px;margin:16px 0 24px;">
+      <a href="https://claude.ai/download" class="btn-primary" style="font-size:0.9rem;padding:10px 24px;">Download Claude Desktop</a>
+    </div>
+
+    <div class="alert alert-info">
+      Claude Desktop is required because it supports MCP (Model Context Protocol), which is how this server connects to Claude. The web version of Claude at claude.ai does NOT support MCP yet.
+    </div>
+
+    <!-- Step 2 -->
+    <h2>Step 2: Add the WhatsApp MCP Server</h2>
+
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>Open Claude Desktop Settings</h4>
+        <p>Click the <strong>gear icon</strong> in the top-right corner of Claude Desktop, or press <code>Ctrl+,</code> (Windows) / <code>Cmd+,</code> (Mac).</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Go to Developer > Edit Config</h4>
+        <p>In Settings, click <strong>"Developer"</strong> in the left sidebar, then click <strong>"Edit Config"</strong>. This opens the file <code>claude_desktop_config.json</code> in your text editor.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>Paste the configuration</h4>
+        <p>Replace the file contents with this (or merge into existing config):</p>
+      </div>
+    </div>
+
+    <h3>Free Tier (21 tools, no API key needed):</h3>
+<pre>{
+  "mcpServers": {
+    "whatsapp": {
+      "type": "url",
+      "url": "https://whatsapp-mcp-server.eosspirit.workers.dev/mcp"
+    }
+  }
+}</pre>
+
+    <h3>Pro / Enterprise (35 tools, with API key):</h3>
+<pre>{
+  "mcpServers": {
+    "whatsapp": {
+      "type": "url",
+      "url": "https://whatsapp-mcp-server.eosspirit.workers.dev/mcp",
+      "headers": {
+        "X-API-Key": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}</pre>
+
+    <div class="alert alert-warning">
+      <strong>Where is the config file?</strong><br>
+      Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code><br>
+      Mac: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>
+    </div>
+
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h4>Save and Restart Claude Desktop</h4>
+        <p>Save the file, then <strong>completely close and reopen</strong> Claude Desktop. The WhatsApp tools will now be available.</p>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <h2>Step 3: Start Using It</h2>
+
+    <p>Just talk to Claude naturally. Here are some things you can ask:</p>
+
+    <div class="card">
+      <h4>"Send a text message to +56 9 1234 5678 saying the order is ready for pickup"</h4>
+      <p>Sends a WhatsApp text message to the specified number.</p>
+    </div>
+
+    <div class="card">
+      <h4>"Show me my business profile"</h4>
+      <p>Retrieves your WhatsApp Business profile info.</p>
+    </div>
+
+    <div class="card">
+      <h4>"List all my message templates"</h4>
+      <p>Shows all approved/pending templates in your account.</p>
+    </div>
+
+    <div class="card">
+      <h4>"What's my phone quality rating?"</h4>
+      <p>Shows if your number is GREEN (good), YELLOW (warning), or RED (at risk). <span class="badge badge-pro">PRO</span></p>
+    </div>
+
+    <div class="card">
+      <h4>"Show me messages from today"</h4>
+      <p>Retrieves incoming messages received via webhooks. <span class="badge badge-pro">PRO</span></p>
+    </div>
+
+    <!-- Step 4 -->
+    <h2>Step 4: Set Up Your Own WhatsApp Number (Optional)</h2>
+
+    <p>The free and Pro plans use a shared test phone number provided by Meta. To use <strong>your own business phone number</strong>, you need a Meta Business Account:</p>
+
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>Create a Meta Developer Account</h4>
+        <p>Go to <a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a> and sign in with your Facebook account.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Create an App</h4>
+        <p>Click "Create App" > choose "Business" > name it anything (not "WhatsApp" — Meta blocks that). Select "Connect with customers via WhatsApp" as the use case.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>Get Your Credentials</h4>
+        <p>In the WhatsApp section of your app, you'll see:</p>
+        <ul style="margin:8px 0;padding-left:20px;">
+          <li style="color:var(--muted)"><strong>Access Token</strong> — temporary (24h) or permanent (System User)</li>
+          <li style="color:var(--muted)"><strong>Phone Number ID</strong> — your registered number</li>
+          <li style="color:var(--muted)"><strong>Business Account ID</strong> — your WABA ID</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h4>Contact Us for Custom Setup</h4>
+        <p>With the Enterprise plan, we configure your own phone number on our hosted server. Or you can <a href="self-hosting.html">self-host</a> with your own credentials.</p>
+      </div>
+    </div>
+
+    <!-- Troubleshooting -->
+    <h2>Troubleshooting</h2>
+
+    <div class="card">
+      <h4>"Tool not found" or no WhatsApp tools appear</h4>
+      <p>Make sure you saved the config file and <strong>fully restarted</strong> Claude Desktop (not just closed the window — quit the app completely). Check that the JSON is valid (no trailing commas, correct brackets).</p>
+    </div>
+
+    <div class="card">
+      <h4>"Authentication failed" error</h4>
+      <p>If you're on the Pro/Enterprise plan, check that your API key is correct in the config. Make sure there are no extra spaces. You can verify your key at: <code>https://whatsapp-mcp-server.eosspirit.workers.dev/billing/api-key?email=YOUR_EMAIL</code></p>
+    </div>
+
+    <div class="card">
+      <h4>"Rate limit exceeded"</h4>
+      <p>Free tier: 100 requests/hour. Pro: 1,000/hour. Enterprise: 10,000/hour. Wait or upgrade your plan.</p>
+    </div>
+
+    <div class="card">
+      <h4>Pro tools not showing up</h4>
+      <p>Make sure you added the <code>"headers": {"X-API-Key": "..."}</code> section in your config. Free tier only shows 21 tools. Pro/Enterprise shows all 35.</p>
+    </div>
+
+    <div class="card">
+      <h4>Messages not sending</h4>
+      <p>The test phone number can only send to numbers that have been added as test recipients in the Meta Developer Portal. For production, you need your own verified business number.</p>
+    </div>
+
+    <div style="margin:48px 0;text-align:center;">
+      <a href="tools.html" class="btn-primary">View All 35 Tools</a>
+      <a href="pricing.html" class="btn-secondary" style="margin-left:12px;">See Pricing</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>Built by <a href="https://github.com/spirit122">spirit122</a> &middot; <a href="https://github.com/spirit122/whatsapp-mcp-server">GitHub</a> &middot; Powered by Cloudflare Workers</p>
+    </div>
+  </footer>
+
+</body>
+</html>
