@@ -260,6 +260,36 @@ Ask Claude: "Show me messages from +56912345678"</pre>
       <p>Get delivery statistics for a date range: how many sent, delivered, read, and failed.</p>
     </div>
 
+    <!-- Module 9: Safety Tools -->
+    <h2 id="safety">Safety Tools (2 tools) <span class="badge">ALL TIERS</span></h2>
+    <p>Anti-spam protection. Every outbound message is checked by the MessageGuard before sending.</p>
+
+    <div class="card">
+      <h4><code>manage_allowlist</code></h4>
+      <p>Add, remove, or list phone numbers on your recipient allowlist. Enable or disable the allowlist to restrict who can receive messages.</p>
+      <p><strong>Actions:</strong> add, remove, list, enable, disable</p>
+<pre>Ask Claude: "Add +56936538600 to my allowlist"
+Ask Claude: "Show my allowlist"
+Ask Claude: "Enable my recipient allowlist"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>get_messaging_safety_status</code></h4>
+      <p>View your current anti-spam config: allowlist status, rate limits per recipient, unique recipient caps, spam filter status, and usage this hour.</p>
+<pre>Ask Claude: "Show my messaging safety status"</pre>
+    </div>
+
+    <div class="card" style="background:var(--bg-card);border-left:4px solid var(--accent);">
+      <h4>Anti-Spam Limits by Tier</h4>
+      <table style="width:100%;text-align:left;">
+        <tr><th>Protection</th><th>Free</th><th>Pro</th><th>Enterprise</th></tr>
+        <tr><td>Messages/recipient/hour</td><td>5</td><td>30</td><td>100</td></tr>
+        <tr><td>Unique recipients/hour</td><td>3</td><td>50</td><td>500</td></tr>
+        <tr><td>Spam content filter</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>Duplicate blocking</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+      </table>
+    </div>
+
     <div style="margin:48px 0;text-align:center;">
       <a href="getting-started.html" class="btn-primary">Get Started Now</a>
       <a href="pricing.html" class="btn-secondary" style="margin-left:12px;">See Pricing</a>

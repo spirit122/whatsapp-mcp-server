@@ -236,7 +236,7 @@ R: La recibes por email de Lemonsqueezy. Tambien puedes recuperarla en:
 R: Si, en cualquier momento a traves de Lemonsqueezy. Tu API key se desactivara al final del periodo de facturacion.
 
 **P: Hay un tier gratuito?**
-R: Si! 21 herramientas estan disponibles gratis sin necesidad de API key.
+R: Si! 5 herramientas basicas estan disponibles gratis sin necesidad de API key.
 
 **P: Puedo self-hostear esto?**
 R: Si, el codigo es open source (MIT). Ve la seccion de Self-Hosting arriba.

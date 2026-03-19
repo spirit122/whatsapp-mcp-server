@@ -208,6 +208,36 @@
       <p>The test phone number can only send to numbers that have been added as test recipients in the Meta Developer Portal. For production, you need your own verified business number.</p>
     </div>
 
+    <div class="card">
+      <h4>"Message blocked" or "not in allowlist"</h4>
+      <p>The anti-spam system blocked the message. If allowlist is enabled, add the recipient first:</p>
+      <p>Tell Claude: <em>"Add +1234567890 to my allowlist"</em> then try sending again.</p>
+      <p>Check your limits with: <em>"Show my messaging safety status"</em></p>
+    </div>
+
+    <!-- Anti-Spam Section -->
+    <h2>Anti-Spam Protection</h2>
+
+    <div class="card">
+      <p>Every outbound message passes through the <strong>MessageGuard</strong> before sending. This prevents bad prompts from turning into spam.</p>
+
+      <h4>Protections include:</h4>
+      <ul>
+        <li><strong>Recipient Allowlist</strong> — Restrict who can receive messages. Enable with <code>manage_allowlist</code>.</li>
+        <li><strong>Per-recipient rate limit</strong> — Free: 5 msgs/hr, Pro: 30, Enterprise: 100 per number.</li>
+        <li><strong>Unique recipient cap</strong> — Free: 3 numbers/hr, Pro: 50, Enterprise: 500.</li>
+        <li><strong>Spam content filter</strong> — Blocks known spam patterns ("buy now", "click here to claim", etc.).</li>
+        <li><strong>Duplicate detection</strong> — Blocks sending the same message to the same number repeatedly.</li>
+      </ul>
+
+      <h4>Quick setup:</h4>
+      <ol>
+        <li>Tell Claude: <em>"Enable my allowlist and add +1234567890"</em></li>
+        <li>Now only that number can receive messages.</li>
+        <li>Check your limits: <em>"Show my messaging safety status"</em></li>
+      </ol>
+    </div>
+
     <div style="margin:48px 0;text-align:center;">
       <a href="tools.html" class="btn-primary">View All 35 Tools</a>
       <a href="pricing.html" class="btn-secondary" style="margin-left:12px;">See Pricing</a>
