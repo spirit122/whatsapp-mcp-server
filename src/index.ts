@@ -16,6 +16,8 @@ import { Logger } from "./utils/logger";
 import { errorToMcpResult } from "./utils/errors";
 import { handleLemonSqueezyWebhook, handleGetApiKey } from "./billing/lemonsqueezy";
 import { handleTenantConfig } from "./billing/tenant";
+import { AutoReplyEngine, getAutoReplyConfig } from "./auto-reply/engine";
+import { WhatsAppClient } from "./whatsapp/client";
 
 // Re-export Durable Objects so Cloudflare can find them
 export { WebhookReceiver } from "./durable-objects/webhook-receiver";
@@ -358,6 +360,50 @@ async function handleWebhookEvent(
       result: doResult,
       entries: payload.entry?.length || 0,
     });
+
+    // ── Auto-Reply: check if any tenant has auto-reply enabled ──
+    // Find incoming text messages and generate AI replies
+    for (const entry of payload.entry || []) {
+      for (const change of entry.changes || []) {
+        const value = change.value;
+        if (!value?.messages) continue;
+
+        for (const msg of value.messages) {
+          if (msg.type !== "text" || !msg.text?.body) continue;
+
+          const senderPhone = msg.from;
+          const senderName = value.contacts?.find(
+            (c: { wa_id: string; profile?: { name?: string } }) => c.wa_id === senderPhone
+          )?.profile?.name;
+
+          // Try to find which tenant owns this phone number
+          // For now, check "owner" tenant (we can expand this later)
+          const tenantKey = `phone_to_tenant:${value.metadata?.phone_number_id}`;
+          const tenantClientId = await env.CACHE.get(tenantKey) || "owner_spirit122";
+
+          const autoReplyConfig = await getAutoReplyConfig(tenantClientId, env);
+          if (!autoReplyConfig?.enabled) continue;
+
+          logger.info("Auto-reply triggered", { from: senderPhone, tenant: tenantClientId });
+
+          const engine = new AutoReplyEngine(env, autoReplyConfig, tenantClientId);
+          const reply = await engine.generateReply(senderPhone, senderName, msg.text.body);
+
+          if (reply) {
+            // Send the reply via WhatsApp
+            const client = new WhatsAppClient(env);
+            try {
+              await client.sendTextMessage(senderPhone, reply);
+              logger.info("Auto-reply sent", { to: senderPhone, replyLength: reply.length });
+            } catch (sendErr) {
+              logger.error("Auto-reply send failed", {
+                error: sendErr instanceof Error ? sendErr.message : String(sendErr),
+              });
+            }
+          }
+        }
+      }
+    }
   } catch (err) {
     logger.error("Webhook processing failed", {
       error: err instanceof Error ? err.message : String(err),

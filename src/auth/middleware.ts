@@ -167,6 +167,10 @@ export function requiresTier(
     "get_message_audit_log",
     "set_custom_rate_limits",
     "export_safety_report",
+    // Auto-Reply (3)
+    "configure_auto_reply",
+    "get_auto_reply_status",
+    "clear_conversation_history",
   ]);
 
   const tierLevel = { free: 0, pro: 1, enterprise: 2 };

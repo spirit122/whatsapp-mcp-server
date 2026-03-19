@@ -23,6 +23,7 @@ import { profileToolDefinitions, handleProfileTool } from "./tools/profile";
 import { flowToolDefinitions, handleFlowTool } from "./tools/flows";
 import { analyticsToolDefinitions, handleAnalyticsTool } from "./tools/analytics";
 import { safetyToolDefinitions, handleSafetyTool } from "./tools/safety";
+import { autoReplyToolDefinitions, handleAutoReplyTool } from "./tools/auto-reply";
 
 // ── JSON-RPC Types ──
 
@@ -57,6 +58,7 @@ export function getAllToolDefinitions() {
     ...flowToolDefinitions,
     ...analyticsToolDefinitions,
     ...safetyToolDefinitions,
+    ...autoReplyToolDefinitions,
   ];
 }
 
@@ -71,6 +73,7 @@ const PROFILE_TOOLS = new Set(profileToolDefinitions.map((t) => t.name));
 const FLOW_TOOLS = new Set(flowToolDefinitions.map((t) => t.name));
 const ANALYTICS_TOOLS = new Set(analyticsToolDefinitions.map((t) => t.name));
 const SAFETY_TOOLS = new Set(safetyToolDefinitions.map((t) => t.name));
+const AUTO_REPLY_TOOLS = new Set(autoReplyToolDefinitions.map((t) => t.name));
 
 // Tools that SEND messages (need anti-spam guard)
 const SENDING_TOOLS = new Set([
@@ -307,6 +310,8 @@ export class McpServer {
         result = await handleAnalyticsTool(toolName, toolArgs, this.client, this.env.DB);
       } else if (SAFETY_TOOLS.has(toolName)) {
         result = await handleSafetyTool(toolName, toolArgs, this.env, this.auth.clientId, this.auth.tier);
+      } else if (AUTO_REPLY_TOOLS.has(toolName)) {
+        result = await handleAutoReplyTool(toolName, toolArgs, this.env, this.auth.clientId, this.auth.tier);
       } else {
         result = {
           content: [
