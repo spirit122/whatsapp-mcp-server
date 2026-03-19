@@ -23,8 +23,18 @@ export { SessionManager } from "./durable-objects/session-manager";
 
 // ── CORS Headers ──
 
+const ALLOWED_ORIGINS = [
+  "https://spirit122.github.io",
+  "https://whatsapp-mcp-server.eosspirit.workers.dev",
+];
+
+function getCorsOrigin(request: Request): string {
+  const origin = request.headers.get("Origin") || "";
+  return ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+}
+
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "*", // Default, overridden per-request
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Key",
 };
@@ -218,6 +228,14 @@ async function handleMcpRequest(
     );
   }
 
+  // Check body size limit (1MB max to prevent DoS)
+  const contentLength = parseInt(request.headers.get("content-length") || "0");
+  if (contentLength > 1_048_576) {
+    return corsResponse(
+      Response.json({ jsonrpc: "2.0", id: null, error: { code: -32600, message: "Request body too large (max 1MB)" } }, { status: 413 })
+    );
+  }
+
   // Parse JSON-RPC request
   let body: any;
   try {
@@ -283,19 +301,17 @@ async function handleWebhookEvent(
 ): Promise<Response> {
   const body = await request.text();
 
-  // Verify signature from Meta
-  if (env.META_APP_SECRET) {
-    const signature = request.headers.get("x-hub-signature-256");
-    const isValid = await verifyWebhookSignatureAsync(
-      body,
-      signature,
-      env.META_APP_SECRET
-    );
+  // Verify signature from Meta — REJECT if secret not configured
+  if (!env.META_APP_SECRET) {
+    logger.error("META_APP_SECRET not configured — rejecting webhook");
+    return Response.json({ error: "Webhook verification not configured" }, { status: 500 });
+  }
 
-    if (!isValid) {
-      logger.warn("Invalid webhook signature");
-      return new Response("Invalid signature", { status: 401 });
-    }
+  const signature = request.headers.get("x-hub-signature-256");
+  const isValid = await verifyWebhookSignatureAsync(body, signature, env.META_APP_SECRET);
+  if (!isValid) {
+    logger.warn("Invalid webhook signature");
+    return Response.json({ error: "Invalid signature" }, { status: 401 });
   }
 
   // Parse and forward to Durable Object

@@ -251,7 +251,7 @@ export class McpServer {
       } else if (MEDIA_TOOLS.has(toolName)) {
         result = await handleMediaTool(toolName, toolArgs, this.client);
       } else if (WEBHOOK_TOOLS.has(toolName)) {
-        result = await handleWebhookTool(toolName, toolArgs, this.env);
+        result = await handleWebhookTool(toolName, toolArgs, this.env, this.auth.clientId);
       } else if (PROFILE_TOOLS.has(toolName)) {
         result = await handleProfileTool(toolName, toolArgs, this.client);
       } else if (FLOW_TOOLS.has(toolName)) {

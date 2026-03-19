@@ -270,11 +270,27 @@ export async function handleGetApiKey(
   request: Request,
   env: Env
 ): Promise<Response> {
-  const url = new URL(request.url);
-  const email = url.searchParams.get("email");
+  // Require API key authentication
+  const apiKey = request.headers.get("X-API-Key");
+  if (!apiKey) {
+    return Response.json(
+      { error: "Authentication required. Add X-API-Key header.", hint: "Use the API key from your Lemonsqueezy purchase email." },
+      { status: 401 }
+    );
+  }
 
-  if (!email) {
-    return Response.json({ error: "Email parameter required" }, { status: 400 });
+  // Verify the key is valid
+  const keyCheck = await env.CACHE.get(`apikey:${apiKey}`, "json") as { email: string; active: boolean } | null;
+  if (!keyCheck || !keyCheck.active) {
+    return Response.json({ error: "Invalid or deactivated API key." }, { status: 401 });
+  }
+
+  // Only allow looking up your own email
+  const url = new URL(request.url);
+  const email = url.searchParams.get("email") || keyCheck.email;
+
+  if (email !== keyCheck.email) {
+    return Response.json({ error: "You can only view your own subscription." }, { status: 403 });
   }
 
   const data = await env.CACHE.get(`email:${email}`, "json") as {
@@ -356,20 +372,6 @@ async function verifyLemonSignature(
 ): Promise<boolean> {
   if (!signature) return false;
 
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-
-  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(body));
-  const hashArray = Array.from(new Uint8Array(sig));
-  const computedHash = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-
-  return computedHash === signature;
+  const { verifyHmacSha256 } = await import("../utils/crypto");
+  return verifyHmacSha256(body, signature, secret);
 }

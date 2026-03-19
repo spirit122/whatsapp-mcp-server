@@ -95,7 +95,7 @@ async function validateApiKey(
 }
 
 /**
- * Async HMAC-SHA256 verification for webhook signatures
+ * Async HMAC-SHA256 verification for webhook signatures (timing-safe)
  */
 export async function verifyWebhookSignatureAsync(
   body: string,
@@ -103,25 +103,10 @@ export async function verifyWebhookSignatureAsync(
   appSecret: string
 ): Promise<boolean> {
   if (!signature || !signature.startsWith("sha256=")) return false;
-
   const expectedHash = signature.slice(7);
 
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(appSecret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-
-  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(body));
-  const hashArray = Array.from(new Uint8Array(sig));
-  const computedHash = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-
-  return computedHash === expectedHash;
+  const { verifyHmacSha256 } = await import("../utils/crypto");
+  return verifyHmacSha256(body, expectedHash, appSecret);
 }
 
 /**

@@ -67,11 +67,12 @@ export const webhookToolDefinitions = [
 export async function handleWebhookTool(
   toolName: string,
   args: Record<string, unknown>,
-  env: Env
+  env: Env,
+  clientId: string = "primary"
 ): Promise<McpToolResult> {
   return withErrorHandling(async () => {
-    // All webhook tools query the Durable Object which stores incoming messages
-    const doId = env.WEBHOOK_RECEIVER.idFromName("primary");
+    // Each tenant gets their own Durable Object instance for data isolation
+    const doId = env.WEBHOOK_RECEIVER.idFromName(`tenant:${clientId}`);
     const stub = env.WEBHOOK_RECEIVER.get(doId);
 
     switch (toolName) {

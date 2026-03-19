@@ -266,9 +266,19 @@ export const getTemplateStatusSchema = z.object({
 // ── Media management ──
 
 export const uploadMediaSchema = z.object({
-  file_url: z.string().url(),
-  mime_type: z.string(),
-  filename: z.string().optional(),
+  file_url: z.string().url().refine((url) => {
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== "https:") return false;
+      const h = parsed.hostname;
+      if (h === "localhost" || h === "127.0.0.1" || h.startsWith("10.") ||
+          h.startsWith("192.168.") || h.startsWith("169.254.") ||
+          h.endsWith(".internal") || h.endsWith(".local")) return false;
+      return true;
+    } catch { return false; }
+  }, "URL must be a public HTTPS URL"),
+  mime_type: z.string().regex(/^(image|video|audio|application)\//, "Invalid MIME type"),
+  filename: z.string().max(255).optional(),
 });
 
 export const getMediaUrlSchema = z.object({
@@ -333,13 +343,15 @@ export const sendFlowMessageSchema = z.object({
 
 // ── Analytics ──
 
+const dateStringSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD format");
+
 export const getAnalyticsSchema = z.object({
-  start_date: z.string(),
-  end_date: z.string(),
+  start_date: dateStringSchema,
+  end_date: dateStringSchema,
   granularity: z.enum(["HALF_HOUR", "DAY", "MONTH"]).optional().default("DAY"),
 });
 
 export const getDeliveryStatsSchema = z.object({
-  start_date: z.string(),
-  end_date: z.string(),
+  start_date: dateStringSchema,
+  end_date: dateStringSchema,
 });
