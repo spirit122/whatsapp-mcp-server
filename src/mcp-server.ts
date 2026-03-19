@@ -10,6 +10,7 @@ import { Logger } from "./utils/logger";
 import { errorToMcpResult } from "./utils/errors";
 import { requiresTier, type AuthContext } from "./auth/middleware";
 import { D1Store } from "./storage/d1";
+import { getTenantConfig, getEffectiveCredentials } from "./billing/tenant";
 
 // Tool definitions
 import { messageToolDefinitions, handleMessageTool } from "./tools/messages";
@@ -75,13 +76,39 @@ export class McpServer {
   private logger: Logger;
   private d1Store: D1Store;
   private auth: AuthContext;
+  private apiKey?: string;
 
-  constructor(env: Env, auth: AuthContext, logger: Logger) {
+  constructor(env: Env, auth: AuthContext, logger: Logger, apiKey?: string) {
     this.env = env;
-    this.client = new WhatsAppClient(env);
     this.logger = logger;
     this.d1Store = new D1Store(env.DB);
     this.auth = auth;
+    this.apiKey = apiKey;
+    // Client is created with default credentials — will be overridden per-tenant in handleRequest
+    this.client = new WhatsAppClient(env);
+  }
+
+  /**
+   * Initialize WhatsApp client with tenant-specific credentials if available
+   */
+  private async initTenantClient(): Promise<void> {
+    if (!this.apiKey) return;
+
+    const tenant = await getTenantConfig(this.apiKey, this.env);
+    if (tenant) {
+      const creds = getEffectiveCredentials(tenant, this.env);
+      // Create a modified env with tenant credentials
+      const tenantEnv = {
+        ...this.env,
+        WHATSAPP_ACCESS_TOKEN: creds.accessToken,
+        WHATSAPP_PHONE_NUMBER_ID: creds.phoneNumberId,
+        WHATSAPP_BUSINESS_ACCOUNT_ID: creds.businessAccountId,
+      };
+      this.client = new WhatsAppClient(tenantEnv);
+      this.logger.info("Using tenant-specific WhatsApp credentials", {
+        clientId: tenant.clientId,
+      });
+    }
   }
 
   /**
@@ -89,6 +116,9 @@ export class McpServer {
    */
   async handleRequest(request: JsonRpcRequest): Promise<JsonRpcResponse> {
     const { id, method, params } = request;
+
+    // Load tenant-specific WhatsApp credentials if available
+    await this.initTenantClient();
 
     try {
       switch (method) {

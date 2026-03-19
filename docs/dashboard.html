@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — WhatsApp MCP Server</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 24px 0; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .stat-card .label { color: var(--muted); font-size: 0.85rem; margin-bottom: 4px; }
+    .stat-card .value { font-size: 1.8rem; font-weight: 800; color: var(--green); }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; }
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: 'Fira Code', monospace;
+    }
+    .form-group input:focus { outline: none; border-color: var(--green); }
+    .form-group .hint { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
+    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+    .status-active { background: var(--green); }
+    .status-inactive { background: #ef4444; }
+    #login-section, #dashboard-section, #loading { display: none; }
+    #login-section.visible, #dashboard-section.visible, #loading.visible { display: block; }
+    .tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+    .tab { padding: 12px 24px; cursor: pointer; color: var(--muted); font-weight: 500; border-bottom: 2px solid transparent; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--green); border-bottom-color: var(--green); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo"><span>WA</span> MCP Server</a>
+      <ul class="nav-links">
+        <li><a href="getting-started.html">Get Started</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="self-hosting.html">Self-Host</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="https://github.com/spirit122/whatsapp-mcp-server" class="nav-cta">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container narrow">
+    <div class="page-header">
+      <h1>Customer Dashboard</h1>
+      <p>Manage your subscription, API key, and WhatsApp configuration.</p>
+    </div>
+
+    <!-- Login Section -->
+    <div id="login-section" class="visible">
+      <div class="card" style="max-width:500px;margin:40px auto;padding:40px;">
+        <h3 style="color:var(--text);text-align:center;margin-bottom:24px;">Enter Your API Key</h3>
+        <div class="form-group">
+          <label>API Key</label>
+          <input type="text" id="api-key-input" placeholder="wmcp_xxxxxxxxxxxxxxxx..." />
+          <div class="hint">Your API key from the Lemonsqueezy purchase email</div>
+        </div>
+        <button onclick="loadDashboard()" class="btn-primary" style="width:100%;border:none;cursor:pointer;font-size:1rem;">View Dashboard</button>
+        <p style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--muted);">
+          Don't have an API key? <a href="pricing.html">Get a plan</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading">
+      <p style="text-align:center;padding:60px;color:var(--muted);">Loading your dashboard...</p>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard-section">
+
+      <!-- Tab Bar -->
+      <div class="tab-bar">
+        <div class="tab active" onclick="switchTab('overview')">Overview</div>
+        <div class="tab" onclick="switchTab('configure')">WhatsApp Setup</div>
+        <div class="tab" onclick="switchTab('claude')">Claude Config</div>
+      </div>
+
+      <!-- Overview Tab -->
+      <div id="tab-overview" class="tab-content active">
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div class="label">Subscription</div>
+            <div class="value" id="d-tier">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Status</div>
+            <div class="value" id="d-status">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">WhatsApp</div>
+            <div class="value" id="d-wa-status">—</div>
+          </div>
+        </div>
+
+        <h3 style="color:var(--text);">Your API Key</h3>
+        <div class="card">
+          <code id="d-api-key-display" style="font-size:1rem;word-break:break-all;">—</code>
+          <p style="margin-top:8px;">Use this key in the <code>X-API-Key</code> header of your Claude MCP configuration.</p>
+        </div>
+      </div>
+
+      <!-- Configure WhatsApp Tab -->
+      <div id="tab-configure" class="tab-content">
+        <h3 style="color:var(--text);">Connect Your Own WhatsApp Number</h3>
+        <p>Configure your own WhatsApp Business credentials to use your own phone number instead of the shared test number.</p>
+
+        <div class="alert alert-info" style="margin:24px 0;">
+          Need help getting these credentials? Follow the <a href="getting-started.html#step-4">Meta Business Account setup guide</a>.
+        </div>
+
+        <div class="form-group">
+          <label>WhatsApp Access Token</label>
+          <input type="password" id="wa-token" placeholder="EAAMxxxxxxxx..." />
+          <div class="hint">From Meta Developer Portal > WhatsApp > API Setup. Use a System User token for permanent access.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number ID</label>
+          <input type="text" id="wa-phone-id" placeholder="1234567890123456" />
+          <div class="hint">Found in Meta Developer Portal > WhatsApp > API Setup, below your test phone number.</div>
+        </div>
+
+        <div class="form-group">
+          <label>WhatsApp Business Account ID</label>
+          <input type="text" id="wa-business-id" placeholder="1234567890123456" />
+          <div class="hint">Found next to the Phone Number ID in the API Setup page.</div>
+        </div>
+
+        <div id="config-result" style="display:none;"></div>
+
+        <button onclick="saveWhatsAppConfig()" class="btn-primary" style="border:none;cursor:pointer;font-size:1rem;">
+          Save & Verify Credentials
+        </button>
+
+        <div id="current-config" style="margin-top:32px;"></div>
+      </div>
+
+      <!-- Claude Config Tab -->
+      <div id="tab-claude" class="tab-content">
+        <h3 style="color:var(--text);">Claude Desktop Configuration</h3>
+        <p>Copy this JSON into your Claude Desktop config file:</p>
+
+        <div class="alert alert-warning">
+          <strong>Config file location:</strong><br>
+          Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code><br>
+          Mac: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>
+        </div>
+
+        <pre id="claude-config-json">{
+  "mcpServers": {
+    "whatsapp": {
+      "type": "url",
+      "url": "https://whatsapp-mcp-server.eosspirit.workers.dev/mcp",
+      "headers": {
+        "X-API-Key": "YOUR_API_KEY"
+      }
+    }
+  }
+}</pre>
+
+        <button onclick="copyConfig()" class="btn-secondary" style="border:none;cursor:pointer;margin-top:8px;">
+          Copy to Clipboard
+        </button>
+        <span id="copy-feedback" style="margin-left:12px;color:var(--green);display:none;">Copied!</span>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>Built by <a href="https://github.com/spirit122">spirit122</a> &middot; <a href="https://github.com/spirit122/whatsapp-mcp-server">GitHub</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE = 'https://whatsapp-mcp-server.eosspirit.workers.dev';
+    let currentApiKey = '';
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+      document.getElementById(`tab-${tab}`).classList.add('active');
+    }
+
+    async function loadDashboard() {
+      currentApiKey = document.getElementById('api-key-input').value.trim();
+      if (!currentApiKey) return alert('Please enter your API key');
+
+      document.getElementById('login-section').classList.remove('visible');
+      document.getElementById('loading').classList.add('visible');
+
+      try {
+        // Check API key by calling health with auth
+        const configRes = await fetch(`${API_BASE}/billing/configure`, {
+          headers: { 'X-API-Key': currentApiKey }
+        });
+        const configData = await configRes.json();
+
+        document.getElementById('loading').classList.remove('visible');
+
+        if (configRes.status === 401) {
+          alert('Invalid API key. Please check and try again.');
+          document.getElementById('login-section').classList.add('visible');
+          return;
+        }
+
+        // Show dashboard
+        document.getElementById('dashboard-section').classList.add('visible');
+
+        // Update overview
+        document.getElementById('d-tier').textContent = configData.tier || 'Pro';
+        document.getElementById('d-status').innerHTML =
+          '<span class="status-dot status-active"></span>Active';
+        document.getElementById('d-wa-status').textContent =
+          configData.configured ? 'Own Number' : 'Shared Test';
+        document.getElementById('d-api-key-display').textContent =
+          currentApiKey.slice(0, 12) + '...' + currentApiKey.slice(-6);
+
+        // Update Claude config with actual key
+        document.getElementById('claude-config-json').textContent = JSON.stringify({
+          mcpServers: {
+            whatsapp: {
+              type: "url",
+              url: `${API_BASE}/mcp`,
+              headers: { "X-API-Key": currentApiKey }
+            }
+          }
+        }, null, 2);
+
+        // Load current WhatsApp config
+        if (configData.configured) {
+          document.getElementById('current-config').innerHTML = `
+            <div class="alert alert-success">
+              <strong>WhatsApp connected!</strong> Using your own credentials.<br>
+              Phone Number ID: ${configData.phoneNumberId || 'configured'}<br>
+              Configured: ${configData.configuredAt || 'yes'}
+            </div>`;
+        }
+
+      } catch (err) {
+        document.getElementById('loading').classList.remove('visible');
+        document.getElementById('login-section').classList.add('visible');
+        alert('Error connecting to server. Please try again.');
+      }
+    }
+
+    async function saveWhatsAppConfig() {
+      const token = document.getElementById('wa-token').value.trim();
+      const phoneId = document.getElementById('wa-phone-id').value.trim();
+      const businessId = document.getElementById('wa-business-id').value.trim();
+
+      if (!token || !phoneId || !businessId) {
+        return alert('All three fields are required.');
+      }
+
+      const resultEl = document.getElementById('config-result');
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = '<div class="alert alert-info">Verifying credentials with Meta API...</div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/billing/configure`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': currentApiKey,
+          },
+          body: JSON.stringify({
+            access_token: token,
+            phone_number_id: phoneId,
+            business_account_id: businessId,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          resultEl.innerHTML = `
+            <div class="alert alert-success">
+              <strong>WhatsApp connected successfully!</strong><br>
+              Your MCP tools now use YOUR phone number.<br>
+              ${data.next_steps ? data.next_steps.map(s => '- ' + s).join('<br>') : ''}
+            </div>`;
+          document.getElementById('d-wa-status').textContent = 'Own Number';
+        } else {
+          resultEl.innerHTML = `
+            <div class="alert alert-warning">
+              <strong>Error:</strong> ${data.error || 'Unknown error'}<br>
+              ${data.details ? '<br>Details: ' + data.details : ''}
+              ${data.help ? '<br>' + data.help : ''}
+            </div>`;
+        }
+      } catch (err) {
+        resultEl.innerHTML = '<div class="alert alert-warning">Network error. Please try again.</div>';
+      }
+    }
+
+    function copyConfig() {
+      const text = document.getElementById('claude-config-json').textContent;
+      navigator.clipboard.writeText(text);
+      const fb = document.getElementById('copy-feedback');
+      fb.style.display = 'inline';
+      setTimeout(() => fb.style.display = 'none', 2000);
+    }
+  </script>
+
+</body>
+</html>

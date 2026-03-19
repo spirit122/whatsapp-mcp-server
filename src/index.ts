@@ -15,6 +15,7 @@ import { RateLimiter, RATE_LIMITS } from "./utils/rate-limiter";
 import { Logger } from "./utils/logger";
 import { errorToMcpResult } from "./utils/errors";
 import { handleLemonSqueezyWebhook, handleGetApiKey } from "./billing/lemonsqueezy";
+import { handleTenantConfig } from "./billing/tenant";
 
 // Re-export Durable Objects so Cloudflare can find them
 export { WebhookReceiver } from "./durable-objects/webhook-receiver";
@@ -109,6 +110,12 @@ export default {
         return corsResponse(result);
       }
 
+      // ── Route: Configure WhatsApp credentials (multi-tenant) ──
+      if (url.pathname === "/billing/configure" && (request.method === "GET" || request.method === "POST")) {
+        const result = await handleTenantConfig(request, env);
+        return corsResponse(result);
+      }
+
       // ── Route: API Info ──
       if (url.pathname === "/tools") {
         const tools = getAllToolDefinitions();
@@ -196,8 +203,9 @@ async function handleMcpRequest(
   // Parse JSON-RPC request
   const body = await request.json() as any;
 
-  // Create MCP server instance
-  const mcpServer = new McpServer(env, auth, logger);
+  // Create MCP server instance with tenant API key for multi-tenant support
+  const apiKey = request.headers.get("X-API-Key") || undefined;
+  const mcpServer = new McpServer(env, auth, logger, apiKey);
 
   // Handle single or batch requests
   if (Array.isArray(body)) {
