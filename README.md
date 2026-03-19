@@ -1,7 +1,7 @@
 # WhatsApp Business MCP Server
 
 > The most complete MCP Server for WhatsApp Business Cloud API.
-> **38 tools** | **8 modules** | **Hosted on Cloudflare Workers** | **Zero installation**
+> **40 tools** | **8 modules** | **Hosted on Cloudflare Workers** | **Zero installation**
 
 Built by [spirit122](https://github.com/spirit122)
 
@@ -288,7 +288,7 @@ npm run typecheck     # TypeScript check
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/` | Health check — server status and tool count |
-| `GET` | `/tools` | List all 38 tools with descriptions |
+| `GET` | `/tools` | List all 40 tools with descriptions |
 | `POST` | `/mcp` | MCP JSON-RPC endpoint (for Claude) |
 | `POST` | `/jsonrpc` | MCP JSON-RPC endpoint (alternative) |
 | `GET` | `/webhook` | Meta webhook verification |

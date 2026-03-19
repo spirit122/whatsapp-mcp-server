@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────
 // MCP Protocol Handler
 // Implements JSON-RPC 2.0 for Model Context Protocol
-// Registers all 38 tools from 8 modules
+// Registers all 40 tools from 8 modules
 // ─────────────────────────────────────────────
 
 import type { Env, McpToolResult } from "./whatsapp/types";
@@ -192,7 +192,7 @@ export class McpServer {
           version: this.env.MCP_SERVER_VERSION || "1.0.0",
           description:
             "The most complete MCP Server for WhatsApp Business Cloud API. " +
-            "38 tools across 8 modules: messaging, interactive, templates, media, " +
+            "40 tools across 8 modules: messaging, interactive, templates, media, " +
             "webhooks, business profile, WhatsApp Flows, and analytics.",
         },
       },
