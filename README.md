@@ -1,7 +1,7 @@
 # WhatsApp Business MCP Server
 
 > The most complete MCP Server for WhatsApp Business Cloud API.
-> **35 tools** | **8 modules** | **Hosted on Cloudflare Workers** | **Zero installation**
+> **38 tools** | **8 modules** | **Hosted on Cloudflare Workers** | **Zero installation**
 
 Built by [spirit122](https://github.com/spirit122)
 
@@ -31,10 +31,11 @@ This MCP Server lets you control WhatsApp Business directly from **Claude AI**. 
 | **WhatsApp Flows** (forms, surveys in chat) | - | **2 tools** | **2 tools** |
 | **Analytics** (metrics, quality, delivery stats) | - | **4 tools** | **4 tools** |
 | Support | Community | Email | Priority + SLA |
-| **Safety tools** (allowlist, spam config) | 2 tools | 2 tools | 2 tools |
-| **Anti-spam protection** | Strict | Moderate | Flexible |
+| **Safety tools** (allowlist, spam config) | 2 tools | 2 tools | **5 tools** |
+| **Enterprise safety** (audit log, custom limits, reports) | - | - | **3 tools** |
+| **Anti-spam protection** | Strict | Moderate | Fully customizable |
 | Rate limit | 100/hr | 1,000/hr | 10,000/hr |
-| **Total tools** | **5** | **25** | **35** |
+| **Total tools** | **5** | **25** | **38** |
 
 **Buy Pro:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/e8a99ad7-b092-4902-9efd-1b26a16165ac)
 
@@ -160,11 +161,18 @@ That's it! Now just ask Claude to send messages, check analytics, or anything el
 | `get_messaging_limits` | Current tier and daily contact limits |
 | `get_delivery_stats` | Delivery statistics for a date range |
 
-### Safety Tools (2 tools)
+### Safety Tools (2 tools — all tiers)
 | Tool | Description |
 |------|------------|
 | `manage_allowlist` | Add/remove/list phone numbers on your recipient allowlist. Enable or disable the allowlist. |
 | `get_messaging_safety_status` | View your current anti-spam config, rate limits, and usage this hour |
+
+### Enterprise Safety Tools (3 tools) `ENTERPRISE`
+| Tool | Description |
+|------|------------|
+| `get_message_audit_log` | Full audit log of all messages sent. Filter by recipient, status, date. Essential for compliance. |
+| `set_custom_rate_limits` | Override default rate limits. Set per-recipient caps, restrict message types, add custom blocked patterns. |
+| `export_safety_report` | Generate compliance report with volume stats, risk score, top recipients, blocked messages, and recommendations. |
 
 ---
 
@@ -280,7 +288,7 @@ npm run typecheck     # TypeScript check
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/` | Health check — server status and tool count |
-| `GET` | `/tools` | List all 35 tools with descriptions |
+| `GET` | `/tools` | List all 38 tools with descriptions |
 | `POST` | `/mcp` | MCP JSON-RPC endpoint (for Claude) |
 | `POST` | `/jsonrpc` | MCP JSON-RPC endpoint (alternative) |
 | `GET` | `/webhook` | Meta webhook verification |

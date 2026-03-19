@@ -163,6 +163,10 @@ export function requiresTier(
     "get_phone_quality_rating",
     "get_messaging_limits",
     "get_delivery_stats",
+    // Enterprise Safety (3)
+    "get_message_audit_log",
+    "set_custom_rate_limits",
+    "export_safety_report",
   ]);
 
   const tierLevel = { free: 0, pro: 1, enterprise: 2 };
