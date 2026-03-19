@@ -81,7 +81,7 @@
   }
 }</pre>
 
-    <h3>Pro / Enterprise (40 tools, with API key):</h3>
+    <h3>Pro / Enterprise (43 tools, with API key):</h3>
 <pre>{
   "mcpServers": {
     "whatsapp": {
@@ -238,8 +238,47 @@
       </ol>
     </div>
 
+    <!-- AI Auto-Reply Section -->
+    <h2>AI Auto-Reply (Enterprise)</h2>
+
+    <div class="card">
+      <p>Enterprise customers can enable <strong>AI-powered automatic replies</strong>. When someone messages you on WhatsApp, the server calls an AI to generate and send a response automatically.</p>
+
+      <h4>Supported providers (bring your own key):</h4>
+      <ul>
+        <li><strong>Groq</strong> — Llama 3.3 70B (free tier available, recommended to start)</li>
+        <li><strong>Claude</strong> (Anthropic) — claude-sonnet-4-20250514</li>
+        <li><strong>OpenAI</strong> — gpt-4o</li>
+        <li><strong>Gemini</strong> (Google) — gemini-2.0-flash</li>
+        <li><strong>DeepSeek</strong> — deepseek-chat</li>
+      </ul>
+
+      <h4>Step 1: Get a free Groq API key</h4>
+      <ol>
+        <li>Go to <a href="https://console.groq.com" target="_blank">console.groq.com</a></li>
+        <li>Sign up (free, use Google)</li>
+        <li>Go to API Keys → Create API Key</li>
+        <li>Copy the key (starts with <code>gsk_</code>)</li>
+      </ol>
+
+      <h4>Step 2: Configure via Claude</h4>
+<pre>Tell Claude: "Configure auto-reply with Groq.
+My API key is gsk_xxxxx.
+System prompt: You are a friendly customer service agent
+for my store. Answer in Spanish. Our website is https://mysite.com"</pre>
+
+      <h4>Step 3: Done!</h4>
+      <p>Incoming WhatsApp messages now get automatic AI responses. The bot remembers conversations and respects business hours if configured.</p>
+
+      <h4>Other useful commands:</h4>
+<pre>Tell Claude: "Show my auto-reply status"
+Tell Claude: "Disable auto-reply"
+Tell Claude: "Clear conversation history for +1234567890"
+Tell Claude: "Change provider to OpenAI with key sk_xxxxx"</pre>
+    </div>
+
     <div style="margin:48px 0;text-align:center;">
-      <a href="tools.html" class="btn-primary">View All 35 Tools</a>
+      <a href="tools.html" class="btn-primary">View All 43 Tools</a>
       <a href="pricing.html" class="btn-secondary" style="margin-left:12px;">See Pricing</a>
     </div>
   </div>

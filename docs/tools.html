@@ -317,6 +317,43 @@ Ask Claude: "Block messages containing 'promo code'"</pre>
 Ask Claude: "What's my account risk score?"</pre>
     </div>
 
+    <!-- AI Auto-Reply Tools -->
+    <h2 id="auto-reply">AI Auto-Reply Tools (3 tools) <span class="badge" style="background:#ff6b00;">ENTERPRISE</span></h2>
+    <p>AI-powered automatic replies to incoming WhatsApp messages. Supports 5 providers: Groq (free), Claude, OpenAI, Gemini, DeepSeek. Each client uses their own API key.</p>
+
+    <div class="card">
+      <h4><code>configure_auto_reply</code></h4>
+      <p>Set up the AI chatbot: choose provider, API key, system prompt, business hours, conversation memory, and rate limits.</p>
+<pre>Ask Claude: "Configure auto-reply with Groq. Key: gsk_xxxxx. Prompt: You are a customer service agent for my store."
+Ask Claude: "Enable business hours only, 9am to 6pm"
+Ask Claude: "Switch provider to OpenAI with model gpt-4o"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>get_auto_reply_status</code></h4>
+      <p>Check your current auto-reply configuration: provider, model, memory status, business hours, and rate limits.</p>
+<pre>Ask Claude: "Show my auto-reply status"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>clear_conversation_history</code></h4>
+      <p>Clear the AI's conversation memory for a specific customer or all customers. Use when you want the AI to start fresh.</p>
+<pre>Ask Claude: "Clear conversation history for +56936538600"
+Ask Claude: "Clear all conversation histories"</pre>
+    </div>
+
+    <div class="card" style="background:var(--bg-card);border-left:4px solid var(--accent);">
+      <h4>Supported AI Providers</h4>
+      <table style="width:100%;text-align:left;">
+        <tr><th>Provider</th><th>Default Model</th><th>Free Tier?</th></tr>
+        <tr><td><strong>Groq</strong></td><td>Llama 3.3 70B</td><td>Yes (recommended)</td></tr>
+        <tr><td>Claude (Anthropic)</td><td>claude-sonnet-4-20250514</td><td>No</td></tr>
+        <tr><td>OpenAI</td><td>gpt-4o</td><td>No</td></tr>
+        <tr><td>Gemini (Google)</td><td>gemini-2.0-flash</td><td>Limited</td></tr>
+        <tr><td>DeepSeek</td><td>deepseek-chat</td><td>No</td></tr>
+      </table>
+    </div>
+
     <div style="margin:48px 0;text-align:center;">
       <a href="getting-started.html" class="btn-primary">Get Started Now</a>
       <a href="pricing.html" class="btn-secondary" style="margin-left:12px;">See Pricing</a>

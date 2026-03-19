@@ -1,7 +1,7 @@
 # WhatsApp Business MCP Server
 
 > The most complete MCP Server for WhatsApp Business Cloud API.
-> **40 tools** | **8 modules** | **Hosted on Cloudflare Workers** | **Zero installation**
+> **43 tools** | **8 modules** | **Hosted on Cloudflare Workers** | **Zero installation**
 
 Built by [spirit122](https://github.com/spirit122)
 
@@ -33,6 +33,7 @@ This MCP Server lets you control WhatsApp Business directly from **Claude AI**. 
 | Support | Community | Email | Priority + SLA |
 | **Safety tools** (allowlist, spam config) | 2 tools | 2 tools | **5 tools** |
 | **Enterprise safety** (audit log, custom limits, reports) | - | - | **3 tools** |
+| **AI Auto-Reply** (chatbot with 5 providers) | - | - | **3 tools** |
 | **Anti-spam protection** | Strict | Moderate | Fully customizable |
 | Rate limit | 100/hr | 1,000/hr | 10,000/hr |
 | **Total tools** | **5** | **25** | **38** |
@@ -213,6 +214,73 @@ Claude: ✅ Message sent!
 
 ---
 
+## AI Auto-Reply (Enterprise) — WhatsApp Chatbot
+
+Enterprise customers can enable **AI-powered automatic replies** to incoming WhatsApp messages. When a customer messages you, the server calls an AI provider to generate a response and sends it back automatically.
+
+### Supported AI Providers
+
+| Provider | Model (default) | Free tier? |
+|----------|----------------|:----------:|
+| **Groq** | Llama 3.3 70B | **Yes** (recommended to start) |
+| **Claude** (Anthropic) | claude-sonnet-4-20250514 | No |
+| **OpenAI** | gpt-4o | No |
+| **Gemini** (Google) | gemini-2.0-flash | Limited free |
+| **DeepSeek** | deepseek-chat | No |
+
+Each client uses **their own AI API key** — you are not charged for AI calls.
+
+### How to Set Up Auto-Reply
+
+**Step 1:** Get an API key from your preferred provider:
+- **Groq (free):** [console.groq.com](https://console.groq.com) → API Keys → Create
+- **OpenAI:** [platform.openai.com](https://platform.openai.com) → API Keys
+- **Claude:** [console.anthropic.com](https://console.anthropic.com) → API Keys
+- **Gemini:** [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+- **DeepSeek:** [platform.deepseek.com](https://platform.deepseek.com) → API Keys
+
+**Step 2:** Configure auto-reply via Claude:
+```
+You: "Configure auto-reply with Groq. My API key is gsk_xxxxx.
+      Use this system prompt: You are a friendly customer service agent
+      for my online store. Answer questions about products, shipping,
+      and returns in Spanish. Our website is https://mystore.com"
+
+Claude: ✅ Auto-reply ENABLED with Groq (Llama 3.3 70B)
+```
+
+**Step 3:** That's it! Incoming WhatsApp messages will now get automatic AI responses.
+
+### Auto-Reply Tools (3 tools) `ENTERPRISE`
+
+| Tool | Description |
+|------|------------|
+| `configure_auto_reply` | Set up auto-reply: choose provider, set API key, system prompt, business hours, memory, rate limits |
+| `get_auto_reply_status` | Check current auto-reply config and status |
+| `clear_conversation_history` | Clear AI conversation memory for a customer or all customers |
+
+### Features
+
+- **Conversation memory** — the AI remembers previous messages per customer (configurable, up to 20 messages)
+- **Business hours** — only auto-reply during work hours, with a custom off-hours message
+- **Per-recipient rate limit** — max 20 auto-replies per customer per hour (configurable)
+- **Custom system prompt** — tell the AI who it is, what it sells, how to respond
+- **Any model** — use the default or specify a custom model name
+
+### Example Conversation
+
+```
+Customer: "Hola, cuánto cuesta?"
+Bot: "Hola Ricardo, tenemos planes Free, Pro ($29 USD/mes) y
+      Enterprise ($99 USD/mes). Visita https://mysite.com para más detalles."
+
+Customer: "Tienen envío gratis?"
+Bot: "Sí, el envío es gratuito en pedidos mayores a $50.
+      ¿Te gustaría hacer un pedido?"
+```
+
+---
+
 ## Why This Server vs Others?
 
 | Feature | Other MCP Servers | **This Server** |
@@ -220,9 +288,11 @@ Claude: ✅ Message sent!
 | Send messages (text, media, templates) | Yes | Yes |
 | Interactive messages (buttons, lists, products) | Partial | **Full** |
 | **Receive messages (webhooks)** | No | **Yes** |
+| **AI auto-reply chatbot** | No | **Yes** |
 | **WhatsApp Flows (forms/surveys)** | No | **Yes** |
 | **Analytics & quality monitoring** | No | **Yes** |
 | **Multi-number support** | No | **Yes** |
+| **5 AI providers** (Groq, Claude, OpenAI, Gemini, DeepSeek) | No | **Yes** |
 | Hosted (zero installation) | No | **Yes** |
 | Tier-based access control | No | **Yes** |
 | Paid support | No | **Yes** |
@@ -288,7 +358,7 @@ npm run typecheck     # TypeScript check
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/` | Health check — server status and tool count |
-| `GET` | `/tools` | List all 40 tools with descriptions |
+| `GET` | `/tools` | List all 43 tools with descriptions |
 | `POST` | `/mcp` | MCP JSON-RPC endpoint (for Claude) |
 | `POST` | `/jsonrpc` | MCP JSON-RPC endpoint (alternative) |
 | `GET` | `/webhook` | Meta webhook verification |

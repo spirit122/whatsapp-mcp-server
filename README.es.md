@@ -1,7 +1,7 @@
 # WhatsApp Business MCP Server
 
 > El servidor MCP mas completo para WhatsApp Business Cloud API.
-> **40 herramientas** | **8 modulos** | **Hospedado en Cloudflare Workers** | **Sin instalar nada**
+> **43 herramientas** | **8 modulos** | **Hospedado en Cloudflare Workers** | **Sin instalar nada**
 
 Creado por [spirit122](https://github.com/spirit122)
 

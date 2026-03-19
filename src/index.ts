@@ -3,7 +3,7 @@
 // Entry Point — Cloudflare Worker
 //
 // The most complete MCP Server for WhatsApp Business
-// 40 tools · 8 modules · Hosted on Cloudflare
+// 43 tools · 8 modules · Hosted on Cloudflare
 //
 // By spirit122
 // ─────────────────────────────────────────────
