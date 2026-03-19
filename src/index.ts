@@ -386,20 +386,36 @@ async function handleWebhookEvent(
 
           logger.info("Auto-reply triggered", { from: senderPhone, tenant: tenantClientId });
 
-          const engine = new AutoReplyEngine(env, autoReplyConfig, tenantClientId);
-          const reply = await engine.generateReply(senderPhone, senderName, msg.text.body);
+          try {
+            const engine = new AutoReplyEngine(env, autoReplyConfig, tenantClientId);
+            logger.info("Auto-reply calling AI", { provider: autoReplyConfig.provider, message: msg.text.body });
+            const reply = await engine.generateReply(senderPhone, senderName, msg.text.body);
+            logger.info("Auto-reply AI response", { reply: reply?.substring(0, 100), hasReply: !!reply });
 
-          if (reply) {
-            // Send the reply via WhatsApp
-            const client = new WhatsAppClient(env);
-            try {
-              await client.sendTextMessage(senderPhone, reply);
-              logger.info("Auto-reply sent", { to: senderPhone, replyLength: reply.length });
-            } catch (sendErr) {
-              logger.error("Auto-reply send failed", {
-                error: sendErr instanceof Error ? sendErr.message : String(sendErr),
-              });
+            if (reply) {
+              // Use tenant-specific WhatsApp credentials
+              const { getTenantConfig, getEffectiveCredentials } = await import("./billing/tenant");
+              const apiKeyForTenant = `wmcp_owner_spirit122_master_key_2026`; // TODO: resolve from phone_to_apikey mapping
+              const tenantConfig = await getTenantConfig(apiKeyForTenant, env);
+              let clientEnv = env;
+              if (tenantConfig) {
+                const creds = getEffectiveCredentials(tenantConfig, env);
+                clientEnv = {
+                  ...env,
+                  WHATSAPP_ACCESS_TOKEN: creds.accessToken,
+                  WHATSAPP_PHONE_NUMBER_ID: creds.phoneNumberId,
+                  WHATSAPP_BUSINESS_ACCOUNT_ID: creds.businessAccountId,
+                };
+              }
+              const client = new WhatsAppClient(clientEnv);
+              const sendResult = await client.sendTextMessage(senderPhone, reply);
+              logger.info("Auto-reply sent", { to: senderPhone, replyLength: reply.length, result: JSON.stringify(sendResult) });
             }
+          } catch (autoReplyErr) {
+            logger.error("Auto-reply FAILED", {
+              error: autoReplyErr instanceof Error ? autoReplyErr.message : String(autoReplyErr),
+              stack: autoReplyErr instanceof Error ? autoReplyErr.stack : undefined,
+            });
           }
         }
       }
