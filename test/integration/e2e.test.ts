@@ -86,7 +86,8 @@ describe("MCP Server E2E", () => {
     });
 
     const tools = (result.result as any).tools;
-    expect(tools.length).toBe(35);
+    // Pro tier gets 25 tools (5 free + 20 pro)
+    expect(tools.length).toBe(25);
   });
 
   it("should list only free tools for free tier", async () => {
@@ -103,9 +104,9 @@ describe("MCP Server E2E", () => {
     });
 
     const tools = (result.result as any).tools;
-    // Free tier should have fewer tools (21 free tools)
+    // Free tier should have only 5 tools
     expect(tools.length).toBeLessThan(35);
-    expect(tools.length).toBe(21);
+    expect(tools.length).toBe(5);
   });
 
   // ── Tool Calls ──

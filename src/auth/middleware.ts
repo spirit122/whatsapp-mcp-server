@@ -131,25 +131,53 @@ export function requiresTier(
   toolName: string,
   currentTier: AuthContext["tier"]
 ): boolean {
+  // FREE (5 tools): send_text_message, get_business_profile, get_phone_numbers,
+  //                  list_templates, send_template_message
+
   const PRO_TOOLS = new Set([
-    "get_recent_messages",
-    "get_message_status_updates",
-    "search_conversations",
+    // Messages (7 media types + 2 actions)
+    "send_image_message",
+    "send_video_message",
+    "send_audio_message",
+    "send_document_message",
+    "send_sticker_message",
+    "send_location_message",
+    "send_contact_message",
+    "send_reaction",
+    "mark_as_read",
+    // Interactive (3 basic)
     "send_button_message",
     "send_list_message",
     "send_cta_url_button",
+    // Templates (3 management)
+    "create_template",
+    "delete_template",
+    "get_template_status",
+    // Media (3)
+    "upload_media",
+    "get_media_url",
+    "delete_media",
+    // Webhooks (2 basic)
+    "get_recent_messages",
+    "get_message_status_updates",
+  ]);
+
+  const ENTERPRISE_TOOLS = new Set([
+    // Catalog/Commerce (2)
     "send_product_message",
     "send_product_list_message",
+    // Advanced webhooks (1)
+    "search_conversations",
+    // Profile management (1)
+    "update_business_profile",
+    // WhatsApp Flows (2)
     "create_flow",
     "send_flow_message",
+    // Analytics (4)
     "get_conversation_analytics",
     "get_phone_quality_rating",
     "get_messaging_limits",
     "get_delivery_stats",
-  ]);
-
-  const ENTERPRISE_TOOLS = new Set<string>([
-    // Future enterprise-only tools
   ]);
 
   const tierLevel = { free: 0, pro: 1, enterprise: 2 };
