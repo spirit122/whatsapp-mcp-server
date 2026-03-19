@@ -78,14 +78,22 @@ export default {
         );
       }
 
-      // ── Route: MCP SSE Endpoint ──
-      if (url.pathname === "/sse" || url.pathname === "/mcp") {
+      // ── Route: MCP JSON-RPC (HTTP transport) ──
+      if ((url.pathname === "/sse" || url.pathname === "/mcp" || url.pathname === "/jsonrpc") && request.method === "POST") {
         return await handleMcpRequest(request, env, logger);
       }
 
-      // ── Route: MCP JSON-RPC (HTTP transport) ──
-      if (url.pathname === "/jsonrpc" && request.method === "POST") {
-        return await handleMcpRequest(request, env, logger);
+      // ── Route: MCP info (GET on /mcp or /sse returns server info) ──
+      if ((url.pathname === "/sse" || url.pathname === "/mcp") && request.method === "GET") {
+        return corsResponse(
+          Response.json({
+            server: env.MCP_SERVER_NAME || "whatsapp-business-mcp",
+            version: env.MCP_SERVER_VERSION || "1.0.0",
+            transport: "HTTP POST (JSON-RPC 2.0)",
+            endpoint: `${url.origin}/mcp`,
+            usage: "Send POST requests with JSON-RPC 2.0 body to this endpoint",
+          })
+        );
       }
 
       // ── Route: WhatsApp Webhook Verification (GET) ──
@@ -172,7 +180,17 @@ async function handleMcpRequest(
   logger: Logger
 ): Promise<Response> {
   // Authenticate
-  const auth = await authenticate(request, env, logger);
+  let auth;
+  try {
+    auth = await authenticate(request, env, logger);
+  } catch (err) {
+    return corsResponse(
+      Response.json(
+        { jsonrpc: "2.0", id: null, error: { code: -32000, message: err instanceof Error ? err.message : "Authentication failed" } },
+        { status: 401 }
+      )
+    );
+  }
 
   // Rate limiting
   const rateLimiter = new RateLimiter(env.CACHE, RATE_LIMITS[auth.tier]);
@@ -201,11 +219,24 @@ async function handleMcpRequest(
   }
 
   // Parse JSON-RPC request
-  const body = await request.json() as any;
+  let body: any;
+  try {
+    body = await request.json();
+  } catch {
+    return corsResponse(
+      Response.json(
+        { jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error: invalid JSON body" } },
+        { status: 400 }
+      )
+    );
+  }
 
   // Create MCP server instance with tenant API key for multi-tenant support
   const apiKey = request.headers.get("X-API-Key") || undefined;
   const mcpServer = new McpServer(env, auth, logger, apiKey);
+
+  // Initialize tenant client ONCE before processing any requests (avoid race condition)
+  await mcpServer.initTenantClient();
 
   // Handle single or batch requests
   if (Array.isArray(body)) {

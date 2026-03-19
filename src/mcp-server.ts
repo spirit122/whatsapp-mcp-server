@@ -88,10 +88,14 @@ export class McpServer {
     this.client = new WhatsAppClient(env);
   }
 
+  private tenantInitialized = false;
+
   /**
    * Initialize WhatsApp client with tenant-specific credentials if available
    */
-  private async initTenantClient(): Promise<void> {
+  async initTenantClient(): Promise<void> {
+    if (this.tenantInitialized) return;
+    this.tenantInitialized = true;
     if (!this.apiKey) return;
 
     const tenant = await getTenantConfig(this.apiKey, this.env);
@@ -117,7 +121,7 @@ export class McpServer {
   async handleRequest(request: JsonRpcRequest): Promise<JsonRpcResponse> {
     const { id, method, params } = request;
 
-    // Load tenant-specific WhatsApp credentials if available
+    // Ensure tenant client is initialized (idempotent — safe to call multiple times)
     await this.initTenantClient();
 
     try {

@@ -81,7 +81,7 @@ export async function handleLemonSqueezyWebhook(
   // Verify webhook signature — REJECT if secret not configured
   if (!env.LEMONSQUEEZY_WEBHOOK_SECRET) {
     logger.error("LEMONSQUEEZY_WEBHOOK_SECRET not configured — rejecting webhook");
-    return new Response("Webhook secret not configured", { status: 500 });
+    return Response.json({ error: "Webhook secret not configured" }, { status: 500 });
   }
 
   const signature = request.headers.get("x-signature");
@@ -92,14 +92,14 @@ export async function handleLemonSqueezyWebhook(
   );
   if (!isValid) {
     logger.warn("Invalid Lemonsqueezy webhook signature");
-    return new Response("Invalid signature", { status: 401 });
+    return Response.json({ error: "Invalid signature" }, { status: 401 });
   }
 
   let event: LemonSqueezyWebhookEvent;
   try {
     event = JSON.parse(body);
   } catch {
-    return new Response("Invalid JSON body", { status: 400 });
+    return Response.json({ error: "Invalid JSON body" }, { status: 400 });
   }
   const eventName = event.meta.event_name;
   const attrs = event.data.attributes;
@@ -114,8 +114,28 @@ export async function handleLemonSqueezyWebhook(
     case "subscription_created":
     case "subscription_resumed":
     case "subscription_unpaused": {
-      // New subscription or reactivated — generate API key
       const tier = getTierFromVariant(attrs.variant_id, env);
+
+      // For resumed/unpaused: try to reactivate existing key first
+      if (eventName !== "subscription_created") {
+        const existingKey = await env.CACHE.get(`sub:${event.data.id}`);
+        if (existingKey) {
+          const existingData = await env.CACHE.get(`apikey:${existingKey}`, "json") as ApiKeyData | null;
+          if (existingData) {
+            existingData.active = true;
+            existingData.tier = tier;
+            await env.CACHE.put(`apikey:${existingKey}`, JSON.stringify(existingData));
+            // Update email lookup tier
+            await env.CACHE.put(`email:${attrs.user_email}`, JSON.stringify({
+              apiKey: existingKey, tier, subscriptionId: event.data.id,
+            }));
+            logger.info("Existing API key reactivated", { email: attrs.user_email, tier });
+            return Response.json({ success: true, message: "Subscription reactivated", tier });
+          }
+        }
+      }
+
+      // New subscription — generate API key
       const apiKey = await generateApiKey();
       const keyData: ApiKeyData = {
         clientId: `ls_${attrs.customer_id}`,
