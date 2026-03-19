@@ -27,7 +27,7 @@ new_sqlite_classes = ["WebhookReceiver", "SessionManager"]
 
 # ── Environment Variables ──
 [vars]
-WHATSAPP_API_VERSION = "v21.0"
+WHATSAPP_API_VERSION = "v22.0"
 WHATSAPP_API_BASE_URL = "https://graph.facebook.com"
 MCP_SERVER_NAME = "whatsapp-business-mcp"
 MCP_SERVER_VERSION = "1.0.0"
