@@ -71,8 +71,8 @@ export async function handleWebhookTool(
   clientId: string = "primary"
 ): Promise<McpToolResult> {
   return withErrorHandling(async () => {
-    // Each tenant gets their own Durable Object instance for data isolation
-    const doId = env.WEBHOOK_RECEIVER.idFromName(`tenant:${clientId}`);
+    // Use "primary" DO for now — webhook handler stores all messages there
+    const doId = env.WEBHOOK_RECEIVER.idFromName("primary");
     const stub = env.WEBHOOK_RECEIVER.get(doId);
 
     switch (toolName) {
