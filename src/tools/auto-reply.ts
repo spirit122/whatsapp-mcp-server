@@ -29,7 +29,7 @@ export const autoReplyToolDefinitions = [
         enabled: { type: "boolean", description: "Enable or disable auto-reply" },
         provider: {
           type: "string",
-          enum: ["claude", "openai", "gemini"],
+          enum: ["claude", "openai", "gemini", "deepseek", "groq"],
           description: "AI provider to use for generating replies",
         },
         api_key: {
@@ -130,7 +130,7 @@ export async function handleAutoReplyTool(
 
       const config: AutoReplyConfig = {
         enabled: (args.enabled as boolean) ?? existing?.enabled ?? false,
-        provider: (args.provider as "claude" | "openai" | "gemini") ?? existing?.provider ?? "claude",
+        provider: (args.provider as "claude" | "openai" | "gemini" | "deepseek" | "groq") ?? existing?.provider ?? "claude",
         apiKey: (args.api_key as string) ?? existing?.apiKey ?? "",
         model: (args.model as string) ?? existing?.model,
         systemPrompt: (args.system_prompt as string) ?? existing?.systemPrompt ?? "You are a helpful assistant.",

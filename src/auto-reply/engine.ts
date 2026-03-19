@@ -9,7 +9,7 @@ import type { Env } from "../whatsapp/types";
 
 export interface AutoReplyConfig {
   enabled: boolean;
-  provider: "claude" | "openai" | "gemini";
+  provider: "claude" | "openai" | "gemini" | "deepseek" | "groq";
   apiKey: string;
   model?: string;
   systemPrompt: string;
@@ -41,7 +41,9 @@ interface ConversationMessage {
 const DEFAULT_MODELS: Record<string, string> = {
   claude: "claude-sonnet-4-20250514",
   openai: "gpt-4o",
-  gemini: "gemini-1.5-pro",
+  gemini: "gemini-2.0-flash",
+  deepseek: "deepseek-chat",
+  groq: "llama-3.3-70b-versatile",
 };
 
 // ── Auto Reply Engine ──
@@ -103,6 +105,12 @@ export class AutoReplyEngine {
           break;
         case "gemini":
           reply = await this.callGemini(messageText, history, senderName);
+          break;
+        case "deepseek":
+          reply = await this.callDeepSeek(messageText, history, senderName);
+          break;
+        case "groq":
+          reply = await this.callGroq(messageText, history, senderName);
           break;
         default:
           return null;
@@ -258,6 +266,93 @@ export class AutoReplyEngine {
     };
 
     return data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I could not generate a response.";
+  }
+
+  // ── DeepSeek (OpenAI-compatible) ──
+
+  private async callDeepSeek(
+    message: string,
+    history: ConversationMessage[],
+    senderName?: string
+  ): Promise<string> {
+    const model = this.config.model || DEFAULT_MODELS.deepseek;
+    const maxTokens = this.config.maxTokens || 500;
+
+    const systemPrompt = this.buildSystemPrompt(senderName);
+
+    const messages = [
+      { role: "system" as const, content: systemPrompt },
+      ...history.map((h) => ({ role: h.role as "user" | "assistant", content: h.content })),
+      { role: "user" as const, content: message },
+    ];
+
+    const response = await fetch("https://api.deepseek.com/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${this.config.apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        max_tokens: maxTokens,
+        temperature: this.config.temperature ?? 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`DeepSeek API error: ${response.status} ${err}`);
+    }
+
+    const data = (await response.json()) as {
+      choices: Array<{ message: { content: string } }>;
+    };
+
+    return data.choices[0]?.message?.content || "Sorry, I could not generate a response.";
+  }
+
+  // ── Groq (OpenAI-compatible, free tier) ──
+
+  private async callGroq(
+    message: string,
+    history: ConversationMessage[],
+    senderName?: string
+  ): Promise<string> {
+    const model = this.config.model || DEFAULT_MODELS.groq;
+    const maxTokens = this.config.maxTokens || 500;
+    const systemPrompt = this.buildSystemPrompt(senderName);
+
+    const messages = [
+      { role: "system" as const, content: systemPrompt },
+      ...history.map((h) => ({ role: h.role as "user" | "assistant", content: h.content })),
+      { role: "user" as const, content: message },
+    ];
+
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${this.config.apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        max_tokens: maxTokens,
+        temperature: this.config.temperature ?? 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Groq API error: ${response.status} ${err}`);
+    }
+
+    const data = (await response.json()) as {
+      choices: Array<{ message: { content: string } }>;
+    };
+
+    return data.choices[0]?.message?.content || "Sorry, I could not generate a response.";
   }
 
   // ── Helpers ──
