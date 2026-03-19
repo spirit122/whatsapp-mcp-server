@@ -290,6 +290,33 @@ Ask Claude: "Enable my recipient allowlist"</pre>
       </table>
     </div>
 
+    <!-- Enterprise Safety Tools -->
+    <h2 id="enterprise-safety">Enterprise Safety Tools (3 tools) <span class="badge" style="background:#ff6b00;">ENTERPRISE</span></h2>
+    <p>Advanced compliance, audit, and custom control tools. Only available on the Enterprise plan.</p>
+
+    <div class="card">
+      <h4><code>get_message_audit_log</code></h4>
+      <p>Full audit trail of every message sent through your account. Filter by recipient, delivery status, and date range. Essential for compliance monitoring and team oversight.</p>
+<pre>Ask Claude: "Show me all messages sent to +56936538600 in the last 7 days"
+Ask Claude: "Show me all failed messages this week"
+Ask Claude: "Get my audit log for today"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>set_custom_rate_limits</code></h4>
+      <p>Override default rate limits with your own values. Set per-recipient caps (up to 500/hr), unique recipient limits (up to 2000/hr), restrict allowed message types, and add custom blocked patterns on top of the built-in spam filter.</p>
+<pre>Ask Claude: "Set my rate limit to 200 messages per recipient per hour"
+Ask Claude: "Only allow text and template messages"
+Ask Claude: "Block messages containing 'promo code'"</pre>
+    </div>
+
+    <div class="card">
+      <h4><code>export_safety_report</code></h4>
+      <p>Generate a comprehensive compliance report for your account. Includes message volume, success rate, blocked message count, risk score (0-100), and actionable recommendations. Export as JSON for integration with your compliance systems.</p>
+<pre>Ask Claude: "Generate my safety report for the last 30 days"
+Ask Claude: "What's my account risk score?"</pre>
+    </div>
+
     <div style="margin:48px 0;text-align:center;">
       <a href="getting-started.html" class="btn-primary">Get Started Now</a>
       <a href="pricing.html" class="btn-secondary" style="margin-left:12px;">See Pricing</a>
