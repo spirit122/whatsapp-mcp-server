@@ -11,6 +11,7 @@ import { errorToMcpResult } from "./utils/errors";
 import { requiresTier, type AuthContext } from "./auth/middleware";
 import { D1Store } from "./storage/d1";
 import { getTenantConfig, getEffectiveCredentials } from "./billing/tenant";
+import { MessageGuard } from "./utils/message-guard";
 
 // Tool definitions
 import { messageToolDefinitions, handleMessageTool } from "./tools/messages";
@@ -21,6 +22,7 @@ import { webhookToolDefinitions, handleWebhookTool } from "./tools/webhooks";
 import { profileToolDefinitions, handleProfileTool } from "./tools/profile";
 import { flowToolDefinitions, handleFlowTool } from "./tools/flows";
 import { analyticsToolDefinitions, handleAnalyticsTool } from "./tools/analytics";
+import { safetyToolDefinitions, handleSafetyTool } from "./tools/safety";
 
 // ── JSON-RPC Types ──
 
@@ -54,6 +56,7 @@ export function getAllToolDefinitions() {
     ...profileToolDefinitions,
     ...flowToolDefinitions,
     ...analyticsToolDefinitions,
+    ...safetyToolDefinitions,
   ];
 }
 
@@ -67,6 +70,17 @@ const WEBHOOK_TOOLS = new Set(webhookToolDefinitions.map((t) => t.name));
 const PROFILE_TOOLS = new Set(profileToolDefinitions.map((t) => t.name));
 const FLOW_TOOLS = new Set(flowToolDefinitions.map((t) => t.name));
 const ANALYTICS_TOOLS = new Set(analyticsToolDefinitions.map((t) => t.name));
+const SAFETY_TOOLS = new Set(safetyToolDefinitions.map((t) => t.name));
+
+// Tools that SEND messages (need anti-spam guard)
+const SENDING_TOOLS = new Set([
+  "send_text_message", "send_image_message", "send_video_message",
+  "send_audio_message", "send_document_message", "send_sticker_message",
+  "send_location_message", "send_contact_message",
+  "send_button_message", "send_list_message", "send_cta_url_button",
+  "send_product_message", "send_product_list_message",
+  "send_template_message", "send_flow_message",
+]);
 
 // ── MCP Server Class ──
 
@@ -238,6 +252,39 @@ export class McpServer {
       };
     }
 
+    // ── Anti-spam guard for sending tools ──
+    if (SENDING_TOOLS.has(toolName)) {
+      const recipientPhone = toolArgs.to as string;
+      if (recipientPhone) {
+        const guard = new MessageGuard(this.env, {
+          clientId: this.auth.clientId,
+          tier: this.auth.tier,
+        });
+        const check = await guard.checkSend(
+          recipientPhone,
+          (toolArgs.body as string) || undefined
+        );
+        if (!check.allowed) {
+          return {
+            jsonrpc: "2.0",
+            id,
+            result: {
+              content: [{
+                type: "text",
+                text: JSON.stringify({
+                  error: true,
+                  blocked: true,
+                  reason: check.reason,
+                  tip: "Use manage_allowlist tool to configure allowed recipients, or get_messaging_safety_status to check your limits.",
+                }),
+              }],
+              isError: true,
+            },
+          };
+        }
+      }
+    }
+
     // Route to appropriate handler
     let result: McpToolResult;
 
@@ -258,6 +305,8 @@ export class McpServer {
         result = await handleFlowTool(toolName, toolArgs, this.client);
       } else if (ANALYTICS_TOOLS.has(toolName)) {
         result = await handleAnalyticsTool(toolName, toolArgs, this.client, this.env.DB);
+      } else if (SAFETY_TOOLS.has(toolName)) {
+        result = await handleSafetyTool(toolName, toolArgs, this.env, this.auth.clientId, this.auth.tier);
       } else {
         result = {
           content: [
@@ -275,6 +324,20 @@ export class McpServer {
       }
     } catch (err) {
       result = errorToMcpResult(err);
+    }
+
+    // Record successful send for rate limiting
+    if (SENDING_TOOLS.has(toolName) && !result.isError) {
+      const recipientPhone = toolArgs.to as string;
+      if (recipientPhone) {
+        try {
+          const guard = new MessageGuard(this.env, {
+            clientId: this.auth.clientId,
+            tier: this.auth.tier,
+          });
+          await guard.recordSend(recipientPhone);
+        } catch { /* don't fail the send if recording fails */ }
+      }
     }
 
     // Log tool usage

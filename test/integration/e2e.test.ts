@@ -24,7 +24,12 @@ function createMockEnv(): Env {
     MCP_SERVER_NAME: "whatsapp-business-mcp",
     MCP_SERVER_VERSION: "1.0.0",
     LOG_LEVEL: "error",
-    CACHE: {} as any,
+    CACHE: {
+      get: async () => null,
+      put: async () => {},
+      delete: async () => {},
+      list: async () => ({ keys: [] }),
+    } as any,
     DB: {
       prepare: () => ({
         bind: () => ({ run: async () => ({}) }),
@@ -86,8 +91,8 @@ describe("MCP Server E2E", () => {
     });
 
     const tools = (result.result as any).tools;
-    // Pro tier gets 25 tools (5 free + 20 pro)
-    expect(tools.length).toBe(25);
+    // Pro tier gets 27 tools (5 free + 20 pro + 2 safety)
+    expect(tools.length).toBe(27);
   });
 
   it("should list only free tools for free tier", async () => {
@@ -104,9 +109,9 @@ describe("MCP Server E2E", () => {
     });
 
     const tools = (result.result as any).tools;
-    // Free tier should have only 5 tools
-    expect(tools.length).toBeLessThan(35);
-    expect(tools.length).toBe(5);
+    // Free tier should have 7 tools (5 core + 2 safety)
+    expect(tools.length).toBeLessThan(37);
+    expect(tools.length).toBe(7);
   });
 
   // ── Tool Calls ──
@@ -229,13 +234,13 @@ describe("MCP Server E2E", () => {
 
 describe("Tool Definitions Integrity", () => {
   it("should have exactly 35 tools", () => {
-    expect(getAllToolDefinitions()).toHaveLength(35);
+    expect(getAllToolDefinitions()).toHaveLength(37);
   });
 
   it("all tools should have unique names", () => {
     const tools = getAllToolDefinitions();
     const names = tools.map((t) => t.name);
-    expect(new Set(names).size).toBe(35);
+    expect(new Set(names).size).toBe(37);
   });
 
   it("all tools should have descriptions", () => {
