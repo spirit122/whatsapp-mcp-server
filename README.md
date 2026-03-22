@@ -38,9 +38,9 @@ This MCP Server lets you control WhatsApp Business directly from **Claude AI**. 
 | Rate limit | 100/hr | 1,000/hr | 10,000/hr |
 | **Total tools** | **5** | **25** | **38** |
 
-**Buy Pro:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/e8a99ad7-b092-4902-9efd-1b26a16165ac)
+**Buy Pro:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/af231967-2bc4-4342-8d2e-e88cdd70ae42)
 
-**Buy Enterprise:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/1c83b498-baa7-41da-8500-601996487f86)
+**Buy Enterprise:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/5ec0efcf-f1b2-46bd-a1dc-6bd5a9a504b1)
 
 ### Step 2: Get Your API Key
 

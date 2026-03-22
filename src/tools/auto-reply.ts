@@ -117,7 +117,7 @@ export async function handleAutoReplyTool(
         text: JSON.stringify({
           error: true,
           message: `${toolName} is Enterprise-only. Upgrade to enable AI-powered auto-replies.`,
-          upgrade_url: "https://spirit122.lemonsqueezy.com/checkout/buy/1c83b498-baa7-41da-8500-601996487f86",
+          upgrade_url: "https://spirit122.lemonsqueezy.com/checkout/buy/5ec0efcf-f1b2-46bd-a1dc-6bd5a9a504b1",
         }),
       }],
       isError: true,

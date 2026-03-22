@@ -34,9 +34,9 @@ Este servidor MCP te permite controlar WhatsApp Business directamente desde **Cl
 | Soporte | Comunidad | Email | Prioritario + SLA |
 | **Total herramientas** | **21** | **35** | **35** |
 
-**Comprar Pro:** [Haz clic aqui para suscribirte](https://spirit122.lemonsqueezy.com/checkout/buy/e8a99ad7-b092-4902-9efd-1b26a16165ac)
+**Comprar Pro:** [Haz clic aqui para suscribirte](https://spirit122.lemonsqueezy.com/checkout/buy/af231967-2bc4-4342-8d2e-e88cdd70ae42)
 
-**Comprar Enterprise:** [Haz clic aqui para suscribirte](https://spirit122.lemonsqueezy.com/checkout/buy/1c83b498-baa7-41da-8500-601996487f86)
+**Comprar Enterprise:** [Haz clic aqui para suscribirte](https://spirit122.lemonsqueezy.com/checkout/buy/5ec0efcf-f1b2-46bd-a1dc-6bd5a9a504b1)
 
 ### Paso 2: Obtener tu API Key
 
