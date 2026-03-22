@@ -1,68 +1,57 @@
-# WhatsApp Business MCP Server
-
-> The most complete MCP Server for WhatsApp Business Cloud API.
-> **43 tools** | **8 modules** | **Hosted on Cloudflare Workers** | **Zero installation**
-
-Built by [spirit122](https://github.com/spirit122)
+<p align="center">
+  <h1 align="center">WA MCP Server</h1>
+  <p align="center">
+    <strong>The most complete MCP Server for WhatsApp Business Cloud API</strong>
+  </p>
+  <p align="center">
+    <a href="https://spirit122.github.io/whatsapp-mcp-server/">Website</a> &middot;
+    <a href="https://spirit122.github.io/whatsapp-mcp-server/getting-started.html">Getting Started</a> &middot;
+    <a href="https://spirit122.github.io/whatsapp-mcp-server/tools.html">All Tools</a> &middot;
+    <a href="https://spirit122.github.io/whatsapp-mcp-server/pricing.html">Pricing</a> &middot;
+    <a href="https://spirit122.github.io/whatsapp-mcp-server/dashboard.html">Dashboard</a>
+  </p>
+  <p align="center">
+    <img src="https://img.shields.io/badge/tools-43-25D366?style=for-the-badge" alt="43 Tools" />
+    <img src="https://img.shields.io/badge/modules-10-0088cc?style=for-the-badge" alt="10 Modules" />
+    <img src="https://img.shields.io/badge/tests-72%20passing-brightgreen?style=for-the-badge" alt="72 Tests" />
+    <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Cloudflare%20Workers-deployed-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" />
+    <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="MIT License" />
+  </p>
+</p>
 
 ---
 
-## What is this?
+## Overview
 
-This MCP Server lets you control WhatsApp Business directly from **Claude AI**. Send messages, receive replies, manage templates, track analytics — all through natural language.
+WA MCP Server connects AI assistants like **Claude** with the **WhatsApp Business API**. Send messages, receive replies, manage templates, set up AI chatbots, track analytics, and protect against spam — all through natural language.
 
-**Example:** Just tell Claude *"Send a message to +56 9 1234 5678 saying the order is ready"* and it does it.
+```
+You: "Send a message to +56 9 1234 5678 saying the order is ready"
+Claude: Message sent! ID: wamid.HBgL...
+```
+
+### Why this server?
+
+| Feature | Other MCP Servers | **WA MCP Server** |
+|---------|:-----------------:|:-----------------:|
+| Send messages (text, media, templates) | Yes | Yes |
+| Interactive messages (buttons, lists, products) | Partial | **Full** |
+| **Receive messages (webhooks)** | No | **Yes** |
+| **AI auto-reply chatbot (5 providers)** | No | **Yes** |
+| **WhatsApp Flows (forms/surveys)** | No | **Yes** |
+| **Analytics & quality monitoring** | No | **Yes** |
+| **Anti-spam protection** | No | **Yes** |
+| **Multi-tenant (each client uses own WhatsApp)** | No | **Yes** |
+| Hosted (zero installation) | No | **Yes** |
 
 ---
 
-## Get Started in 3 Steps
+## Quick Start
 
-### Step 1: Choose Your Plan
+### 1. Add to Claude Desktop
 
-| | Free | Pro | Enterprise |
-|---|:---:|:---:|:---:|
-| **Price** | $0 | $27,000 CLP/mo | $92,000 CLP/mo |
-| Core messages (text, image, video, audio, docs) | 10 tools | 10 tools | 10 tools |
-| Templates (send, create, list, delete) | 5 tools | 5 tools | 5 tools |
-| Media (upload, download, delete) | 3 tools | 3 tools | 3 tools |
-| Business profile | 3 tools | 3 tools | 3 tools |
-| **Interactive messages** (buttons, lists, products) | - | **5 tools** | **5 tools** |
-| **Webhooks** (receive messages, search conversations) | - | **3 tools** | **3 tools** |
-| **WhatsApp Flows** (forms, surveys in chat) | - | **2 tools** | **2 tools** |
-| **Analytics** (metrics, quality, delivery stats) | - | **4 tools** | **4 tools** |
-| Support | Community | Email | Priority + SLA |
-| **Safety tools** (allowlist, spam config) | 2 tools | 2 tools | **5 tools** |
-| **Enterprise safety** (audit log, custom limits, reports) | - | - | **3 tools** |
-| **AI Auto-Reply** (chatbot with 5 providers) | - | - | **3 tools** |
-| **Anti-spam protection** | Strict | Moderate | Fully customizable |
-| Rate limit | 100/hr | 1,000/hr | 10,000/hr |
-| **Total tools** | **5** | **25** | **38** |
-
-**Buy Pro:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/af231967-2bc4-4342-8d2e-e88cdd70ae42)
-
-**Buy Enterprise:** [Click here to subscribe](https://spirit122.lemonsqueezy.com/checkout/buy/5ec0efcf-f1b2-46bd-a1dc-6bd5a9a504b1)
-
-### Step 2: Get Your API Key
-
-After purchasing, you will receive a **license key** via email from Lemonsqueezy. This is your API key.
-
-You can also retrieve it at any time:
-```
-GET https://whatsapp-mcp-server.eosspirit.workers.dev/billing/api-key?email=YOUR_EMAIL
-```
-
-### Step 3: Connect to Claude Desktop
-
-1. Open **Claude Desktop**
-2. Click the **gear icon** (Settings) > **Developer** > **Edit Config**
-3. This opens `claude_desktop_config.json`. Paste the config below.
-4. **Restart Claude Desktop**
-
-> **Config file location:**
-> - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-> - **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-
-**Free tier** (no API key needed):
+**Free tier** (7 tools, no API key):
 ```json
 {
   "mcpServers": {
@@ -82,289 +71,136 @@ GET https://whatsapp-mcp-server.eosspirit.workers.dev/billing/api-key?email=YOUR
       "type": "url",
       "url": "https://whatsapp-mcp-server.eosspirit.workers.dev/mcp",
       "headers": {
-        "X-API-Key": "YOUR_API_KEY_HERE"
+        "X-API-Key": "YOUR_API_KEY"
       }
     }
   }
 }
 ```
 
-That's it! Now just ask Claude to send messages, check analytics, or anything else.
+> **Config file location:**
+> - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+> - **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+### 2. Restart Claude Desktop
+
+### 3. Start messaging
+
+```
+"Send a text to +1234567890 saying hello"
+"Show me my message templates"
+"What's my phone quality rating?"
+"Configure auto-reply with Groq"
+```
 
 ---
 
-## All 35 Tools
+## Plans & Pricing
 
-### Module 1: Messages (10 tools)
-| Tool | Description |
-|------|------------|
-| `send_text_message` | Send text with URL preview and reply support |
-| `send_image_message` | Send image via URL or media ID |
-| `send_video_message` | Send video (MP4, 3GPP) |
-| `send_audio_message` | Send audio (AAC, MP3, OGG) |
-| `send_document_message` | Send document (PDF, etc.) |
-| `send_sticker_message` | Send sticker (WEBP) |
-| `send_location_message` | Send location with coordinates |
-| `send_contact_message` | Send contact cards |
-| `send_reaction` | React to a message with emoji |
-| `mark_as_read` | Mark message as read (blue checkmarks) |
+| | Free | Pro | Enterprise |
+|---|:---:|:---:|:---:|
+| **Price** | $0 | $29 USD/mo | $99 USD/mo |
+| **Tools** | 7 | 27 | 43 |
+| Messages (text, image, video, audio, docs) | 5 tools | 10 tools | 10 tools |
+| Safety tools (allowlist, spam config) | 2 tools | 2 tools | 5 tools |
+| Templates | - | 5 tools | 5 tools |
+| Media | - | 3 tools | 3 tools |
+| Interactive (buttons, lists, products) | - | 5 tools | 5 tools |
+| Webhooks (receive messages) | - | 3 tools | 3 tools |
+| Business profile | - | 3 tools | 3 tools |
+| WhatsApp Flows | - | - | 2 tools |
+| Analytics & quality | - | - | 4 tools |
+| AI auto-reply chatbot | - | - | 3 tools |
+| Enterprise safety (audit, reports) | - | - | 3 tools |
+| Rate limit | 100/hr | 1,000/hr | 10,000/hr |
+| Support | Community | Email | Priority + SLA |
 
-### Module 2: Interactive Messages (5 tools) `PRO`
-| Tool | Description |
-|------|------------|
-| `send_button_message` | Up to 3 reply buttons for quick choices |
-| `send_list_message` | Scrollable list with sections and rows |
-| `send_cta_url_button` | Call-to-action URL button |
-| `send_product_message` | Single product from your catalog |
-| `send_product_list_message` | Multi-product catalog view |
+<p align="center">
+  <a href="https://spirit122.lemonsqueezy.com/checkout/buy/af231967-2bc4-4342-8d2e-e88cdd70ae42"><strong>Get Pro - $29/mo</strong></a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://spirit122.lemonsqueezy.com/checkout/buy/5ec0efcf-f1b2-46bd-a1dc-6bd5a9a504b1"><strong>Get Enterprise - $99/mo</strong></a>
+</p>
 
-### Module 3: Templates (5 tools)
-| Tool | Description |
-|------|------------|
-| `send_template_message` | Send approved template with dynamic parameters |
-| `list_templates` | List all your message templates |
-| `create_template` | Create a new template (requires Meta approval) |
-| `delete_template` | Delete a template by name |
-| `get_template_status` | Check if a template is approved, pending, or rejected |
+---
 
-### Module 4: Media (3 tools)
-| Tool | Description |
-|------|------------|
-| `upload_media` | Upload file to WhatsApp servers (max 100MB) |
-| `get_media_url` | Get download URL for a media file (expires in 5 min) |
-| `delete_media` | Delete uploaded media |
+## All 43 Tools
 
-### Module 5: Webhooks (3 tools) `PRO`
-| Tool | Description |
-|------|------------|
-| `get_recent_messages` | Get messages received from customers |
-| `get_message_status_updates` | Track sent / delivered / read / failed |
-| `search_conversations` | Search messages by text, phone number, or date |
+### Messages (10 tools)
+`send_text_message` `send_image_message` `send_video_message` `send_audio_message` `send_document_message` `send_sticker_message` `send_location_message` `send_contact_message` `send_reaction` `mark_as_read`
 
-### Module 6: Business Profile (3 tools)
-| Tool | Description |
-|------|------------|
-| `get_business_profile` | Get your profile info (about, address, email) |
-| `update_business_profile` | Update any profile field |
-| `get_phone_numbers` | List registered numbers with quality rating |
+### Interactive Messages (5 tools) `PRO`
+`send_button_message` `send_list_message` `send_cta_url_button` `send_product_message` `send_product_list_message`
 
-### Module 7: WhatsApp Flows (2 tools) `PRO`
-| Tool | Description |
-|------|------------|
-| `create_flow` | Create interactive forms/surveys inside WhatsApp |
-| `send_flow_message` | Send a Flow to a customer |
+### Templates (5 tools) `PRO`
+`send_template_message` `list_templates` `create_template` `delete_template` `get_template_status`
 
-### Module 8: Analytics (4 tools) `PRO`
-| Tool | Description |
-|------|------------|
-| `get_conversation_analytics` | Conversation metrics by time period |
-| `get_phone_quality_rating` | Phone quality: GREEN / YELLOW / RED |
-| `get_messaging_limits` | Current tier and daily contact limits |
-| `get_delivery_stats` | Delivery statistics for a date range |
+### Media (3 tools) `PRO`
+`upload_media` `get_media_url` `delete_media`
 
-### Safety Tools (2 tools — all tiers)
-| Tool | Description |
-|------|------------|
-| `manage_allowlist` | Add/remove/list phone numbers on your recipient allowlist. Enable or disable the allowlist. |
-| `get_messaging_safety_status` | View your current anti-spam config, rate limits, and usage this hour |
+### Webhooks (3 tools) `PRO`
+`get_recent_messages` `get_message_status_updates` `search_conversations`
 
-### Enterprise Safety Tools (3 tools) `ENTERPRISE`
-| Tool | Description |
-|------|------------|
-| `get_message_audit_log` | Full audit log of all messages sent. Filter by recipient, status, date. Essential for compliance. |
-| `set_custom_rate_limits` | Override default rate limits. Set per-recipient caps, restrict message types, add custom blocked patterns. |
-| `export_safety_report` | Generate compliance report with volume stats, risk score, top recipients, blocked messages, and recommendations. |
+### Business Profile (3 tools) `PRO`
+`get_business_profile` `update_business_profile` `get_phone_numbers`
+
+### WhatsApp Flows (2 tools) `ENTERPRISE`
+`create_flow` `send_flow_message`
+
+### Analytics (4 tools) `ENTERPRISE`
+`get_conversation_analytics` `get_phone_quality_rating` `get_messaging_limits` `get_delivery_stats`
+
+### Safety Tools (2 tools)
+`manage_allowlist` `get_messaging_safety_status`
+
+### Enterprise Safety (3 tools) `ENTERPRISE`
+`get_message_audit_log` `set_custom_rate_limits` `export_safety_report`
+
+### AI Auto-Reply (3 tools) `ENTERPRISE`
+`configure_auto_reply` `get_auto_reply_status` `clear_conversation_history`
+
+> See [full tool reference](https://spirit122.github.io/whatsapp-mcp-server/tools.html) with usage examples.
+
+---
+
+## AI Auto-Reply Chatbot
+
+Enterprise customers can enable AI-powered automatic replies. When a customer messages you on WhatsApp, the server calls an AI provider and sends the response back automatically.
+
+**5 supported providers:**
+
+| Provider | Free tier? |
+|----------|:----------:|
+| **Groq** (Llama 3.3 70B) | Yes |
+| **OpenAI** (GPT-4o) | No |
+| **Claude** (Anthropic) | No |
+| **Gemini** (Google) | Limited |
+| **DeepSeek** | No |
+
+Each client uses **their own AI API key** — no AI costs on our side.
+
+```
+Customer: "Hola, cuanto cuesta?"
+Bot: "Hola! Tenemos planes Free, Pro ($29/mes) y Enterprise ($99/mes).
+      Visita https://mysite.com para mas detalles."
+
+Customer: "Tienen envio gratis?"
+Bot: "Si, envio gratuito en pedidos mayores a $50."
+```
 
 ---
 
 ## Anti-Spam Protection
 
-Every outbound message is checked by the built-in **MessageGuard** before sending. No bad prompt can turn into spam.
-
-### Protections by Tier
+Every outbound message passes through **MessageGuard** before sending. No bad prompt can turn into spam.
 
 | Protection | Free | Pro | Enterprise |
 |------------|:----:|:---:|:----------:|
-| **Recipient allowlist** | Configurable | Configurable | Configurable |
-| **Messages per recipient per hour** | 5 | 30 | 100 |
-| **Unique recipients per hour** | 3 | 50 | 500 |
-| **Spam content detection** | Yes | Yes | Yes |
-| **Blocked patterns** | "buy now", "click here to claim", "congratulations you won", etc. | Same | Same |
-
-### How It Works
-
-1. **Allowlist** — Enable it with `manage_allowlist` to restrict who can receive messages. If enabled, only numbers on the list can be messaged.
-2. **Per-recipient rate limit** — Max messages to the same number per hour. Prevents flooding a single contact.
-3. **Unique recipient limit** — Max different numbers per hour. Prevents mass-messaging campaigns.
-4. **Content filter** — Blocks messages matching known spam patterns (promotional language, chain messages).
-5. **Duplicate detection** — Blocks sending the same message to the same number within a short window.
-
-### Quick Example
-
-```
-You: "Send a message to +1234567890 saying hello"
-Claude: ❌ Blocked — recipient not in allowlist. Use manage_allowlist to add them.
-
-You: "Add +1234567890 to my allowlist"
-Claude: ✅ Added. Allowlist now has 1 number.
-
-You: "Send a message to +1234567890 saying hello"
-Claude: ✅ Message sent!
-```
-
----
-
-## AI Auto-Reply (Enterprise) — WhatsApp Chatbot
-
-Enterprise customers can enable **AI-powered automatic replies** to incoming WhatsApp messages. When a customer messages you, the server calls an AI provider to generate a response and sends it back automatically.
-
-### Supported AI Providers
-
-| Provider | Model (default) | Free tier? |
-|----------|----------------|:----------:|
-| **Groq** | Llama 3.3 70B | **Yes** (recommended to start) |
-| **Claude** (Anthropic) | claude-sonnet-4-20250514 | No |
-| **OpenAI** | gpt-4o | No |
-| **Gemini** (Google) | gemini-2.0-flash | Limited free |
-| **DeepSeek** | deepseek-chat | No |
-
-Each client uses **their own AI API key** — you are not charged for AI calls.
-
-### How to Set Up Auto-Reply
-
-**Step 1:** Get an API key from your preferred provider:
-- **Groq (free):** [console.groq.com](https://console.groq.com) → API Keys → Create
-- **OpenAI:** [platform.openai.com](https://platform.openai.com) → API Keys
-- **Claude:** [console.anthropic.com](https://console.anthropic.com) → API Keys
-- **Gemini:** [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
-- **DeepSeek:** [platform.deepseek.com](https://platform.deepseek.com) → API Keys
-
-**Step 2:** Configure auto-reply via Claude:
-```
-You: "Configure auto-reply with Groq. My API key is gsk_xxxxx.
-      Use this system prompt: You are a friendly customer service agent
-      for my online store. Answer questions about products, shipping,
-      and returns in Spanish. Our website is https://mystore.com"
-
-Claude: ✅ Auto-reply ENABLED with Groq (Llama 3.3 70B)
-```
-
-**Step 3:** That's it! Incoming WhatsApp messages will now get automatic AI responses.
-
-### Auto-Reply Tools (3 tools) `ENTERPRISE`
-
-| Tool | Description |
-|------|------------|
-| `configure_auto_reply` | Set up auto-reply: choose provider, set API key, system prompt, business hours, memory, rate limits |
-| `get_auto_reply_status` | Check current auto-reply config and status |
-| `clear_conversation_history` | Clear AI conversation memory for a customer or all customers |
-
-### Features
-
-- **Conversation memory** — the AI remembers previous messages per customer (configurable, up to 20 messages)
-- **Business hours** — only auto-reply during work hours, with a custom off-hours message
-- **Per-recipient rate limit** — max 20 auto-replies per customer per hour (configurable)
-- **Custom system prompt** — tell the AI who it is, what it sells, how to respond
-- **Any model** — use the default or specify a custom model name
-
-### Example Conversation
-
-```
-Customer: "Hola, cuánto cuesta?"
-Bot: "Hola Ricardo, tenemos planes Free, Pro ($29 USD/mes) y
-      Enterprise ($99 USD/mes). Visita https://mysite.com para más detalles."
-
-Customer: "Tienen envío gratis?"
-Bot: "Sí, el envío es gratuito en pedidos mayores a $50.
-      ¿Te gustaría hacer un pedido?"
-```
-
----
-
-## Why This Server vs Others?
-
-| Feature | Other MCP Servers | **This Server** |
-|---------|:-----------------:|:---------------:|
-| Send messages (text, media, templates) | Yes | Yes |
-| Interactive messages (buttons, lists, products) | Partial | **Full** |
-| **Receive messages (webhooks)** | No | **Yes** |
-| **AI auto-reply chatbot** | No | **Yes** |
-| **WhatsApp Flows (forms/surveys)** | No | **Yes** |
-| **Analytics & quality monitoring** | No | **Yes** |
-| **Multi-number support** | No | **Yes** |
-| **5 AI providers** (Groq, Claude, OpenAI, Gemini, DeepSeek) | No | **Yes** |
-| Hosted (zero installation) | No | **Yes** |
-| Tier-based access control | No | **Yes** |
-| Paid support | No | **Yes** |
-
----
-
-## Self-Hosting (Advanced)
-
-If you want to host your own instance instead of using our hosted version:
-
-### Prerequisites
-- [Cloudflare account](https://dash.cloudflare.com/sign-up)
-- [Meta Business Account](https://business.facebook.com/)
-- WhatsApp Business API access
-- Node.js 18+
-
-### Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/spirit122/whatsapp-mcp-server.git
-cd whatsapp-mcp-server
-npm install
-
-# Create Cloudflare resources
-wrangler d1 create whatsapp-mcp-db
-wrangler kv namespace create CACHE
-# Update wrangler.toml with the generated IDs
-
-# Set your WhatsApp API secrets
-wrangler secret put WHATSAPP_ACCESS_TOKEN
-wrangler secret put WHATSAPP_PHONE_NUMBER_ID
-wrangler secret put WHATSAPP_BUSINESS_ACCOUNT_ID
-wrangler secret put WHATSAPP_WEBHOOK_VERIFY_TOKEN
-wrangler secret put META_APP_SECRET
-
-# Run database migrations
-wrangler d1 execute whatsapp-mcp-db --remote --file=./schemas/d1-schema.sql
-
-# Deploy
-wrangler deploy
-```
-
-### Webhook Setup (to receive messages)
-
-1. Go to [Meta Developer Portal](https://developers.facebook.com) > Your App > WhatsApp > Configuration
-2. Set Webhook URL: `https://YOUR-WORKER.workers.dev/webhook`
-3. Set Verify Token: same value as your `WHATSAPP_WEBHOOK_VERIFY_TOKEN` secret
-4. Subscribe to: `messages`
-
-### Development
-
-```bash
-wrangler dev          # Run locally
-npm test              # Run tests (72 tests)
-npm run typecheck     # TypeScript check
-```
-
----
-
-## API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/` | Health check — server status and tool count |
-| `GET` | `/tools` | List all 43 tools with descriptions |
-| `POST` | `/mcp` | MCP JSON-RPC endpoint (for Claude) |
-| `POST` | `/jsonrpc` | MCP JSON-RPC endpoint (alternative) |
-| `GET` | `/webhook` | Meta webhook verification |
-| `POST` | `/webhook` | Meta webhook incoming events |
-| `POST` | `/billing/webhook` | Lemonsqueezy payment webhooks |
-| `GET` | `/billing/api-key?email=` | Retrieve your API key |
+| Recipient allowlist | Yes | Yes | Yes |
+| Messages per recipient/hr | 5 | 30 | 100 (custom) |
+| Unique recipients/hr | 3 | 50 | 500 (custom) |
+| Spam content detection | Yes | Yes | Yes |
+| Audit logging | - | - | Yes |
+| Compliance reports | - | - | Yes |
 
 ---
 
@@ -374,69 +210,90 @@ npm run typecheck     # TypeScript check
 Claude / AI Assistant
        |
        v
-┌──────────────────────────────┐
-│  Cloudflare Worker (Edge)    │
-│  - MCP Protocol (JSON-RPC)   │
-│  - Auth + API Keys + Tiers   │
-│  - Rate Limiting             │
-│  - Billing (Lemonsqueezy)    │
-└──────────┬───────────────────┘
-           |
-     ┌─────┴──────┐
-     v            v
-┌─────────┐  ┌──────────────┐
-│ WhatsApp│  │ Durable      │
-│ Cloud   │  │ Objects      │
-│ API     │  │ (webhooks)   │
-└─────────┘  └──────────────┘
-                   |
-            ┌──────┴──────┐
-            v             v
-        ┌──────┐     ┌──────┐
-        │  D1  │     │  KV  │
-        │ logs │     │cache │
-        └──────┘     └──────┘
++---------------------------------+
+|   Cloudflare Worker (Edge)      |
+|   - MCP Protocol (JSON-RPC)    |
+|   - Auth + API Keys + Tiers    |
+|   - Rate Limiting + Anti-Spam  |
+|   - AI Auto-Reply Engine       |
+|   - Billing (Lemonsqueezy)     |
++--------+----------+------------+
+         |          |
+    +----+----+  +--+-------------+
+    | WhatsApp|  | Durable Objects |
+    | Cloud   |  | (webhooks,      |
+    | API     |  |  sessions)      |
+    +---------+  +--+---------+----+
+                    |         |
+                +---+---+ +---+---+
+                |  D1   | |  KV   |
+                | logs  | | cache |
+                +-------+ +-------+
+```
+
+**Tech stack:** TypeScript (strict) | Cloudflare Workers | D1 | KV | Durable Objects | Zod | Vitest
+
+---
+
+## Self-Hosting
+
+```bash
+git clone https://github.com/spirit122/whatsapp-mcp-server.git
+cd whatsapp-mcp-server
+npm install
+
+# Create Cloudflare resources
+wrangler d1 create whatsapp-mcp-db
+wrangler kv namespace create CACHE
+
+# Set secrets
+wrangler secret put WHATSAPP_ACCESS_TOKEN
+wrangler secret put WHATSAPP_PHONE_NUMBER_ID
+wrangler secret put WHATSAPP_BUSINESS_ACCOUNT_ID
+wrangler secret put WHATSAPP_WEBHOOK_VERIFY_TOKEN
+wrangler secret put META_APP_SECRET
+
+# Deploy
+wrangler d1 execute whatsapp-mcp-db --remote --file=./schemas/d1-schema.sql
+wrangler deploy
+```
+
+> Full self-hosting guide: [spirit122.github.io/whatsapp-mcp-server/self-hosting.html](https://spirit122.github.io/whatsapp-mcp-server/self-hosting.html)
+
+---
+
+## Development
+
+```bash
+wrangler dev          # Run locally
+npm test              # Run 72 tests
+npm run typecheck     # TypeScript strict check
 ```
 
 ---
 
-## FAQ
+## API Endpoints
 
-**Q: Do I need my own WhatsApp Business API account?**
-A: For the hosted version, your API key gives you access to the shared test environment. For production with your own phone number, you'll need a Meta Business Account.
-
-**Q: How do I get my API key after purchase?**
-A: You receive it via email from Lemonsqueezy. You can also retrieve it anytime at:
-`https://whatsapp-mcp-server.eosspirit.workers.dev/billing/api-key?email=YOUR_EMAIL`
-
-**Q: Can I cancel my subscription?**
-A: Yes, anytime through Lemonsqueezy. Your API key will be deactivated at the end of the billing period.
-
-**Q: What happens if my API key stops working?**
-A: Check that your subscription is active. If your payment failed, update your payment method in Lemonsqueezy.
-
-**Q: Is there a free tier?**
-A: Yes! 5 core tools are available for free with no API key needed. Just connect to the MCP endpoint.
-
-**Q: How does anti-spam protection work?**
-A: Every message goes through the MessageGuard which checks allowlists, per-recipient rate limits, unique recipient limits, and spam content patterns. Use `manage_allowlist` to control who can receive messages, and `get_messaging_safety_status` to check your current limits.
-
-**Q: Can someone use a bad prompt to send spam?**
-A: No. The free tier only allows 5 messages to 3 different numbers per hour. All tiers have spam pattern detection and per-recipient rate limiting. You can enable an allowlist so messages can only go to pre-approved numbers.
-
-**Q: Can I self-host this?**
-A: Yes, the code is open source (MIT). See the Self-Hosting section above.
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/` | Health check |
+| `GET` | `/tools` | List all tools |
+| `POST` | `/mcp` | MCP JSON-RPC (Claude) |
+| `GET/POST` | `/webhook` | WhatsApp webhooks |
+| `POST` | `/billing/webhook` | Payment webhooks |
 
 ---
 
 ## Support
 
-- **Free tier:** [GitHub Issues](https://github.com/spirit122/whatsapp-mcp-server/issues)
-- **Pro:** Email support (included with subscription)
-- **Enterprise:** Priority support with SLA
+| Tier | Channel |
+|------|---------|
+| Free | [GitHub Issues](https://github.com/spirit122/whatsapp-mcp-server/issues) |
+| Pro | Email support |
+| Enterprise | Priority support with SLA |
 
 ---
 
 ## License
 
-MIT - Built by [spirit122](https://github.com/spirit122)
+MIT - Built by [spirit122](https://github.com/spirit122) | [Website](https://spirit122.github.io/whatsapp-mcp-server/) | [Product Hunt](https://www.producthunt.com/products/wa-mcp-server)
