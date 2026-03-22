@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Connect Claude with WhatsApp Business in 5 Minutes | WA MCP Server</title>
+  <meta name="description" content="Step-by-step guide to connect Claude AI with WhatsApp Business using the MCP Server. Configure Claude Desktop, send your first message, and automate WhatsApp in under 5 minutes.">
+  <meta name="keywords" content="connect claude whatsapp, claude whatsapp integration, mcp server whatsapp, claude desktop whatsapp, whatsapp mcp, model context protocol whatsapp">
+  <meta property="og:title" content="How to Connect Claude with WhatsApp Business in 5 Minutes">
+  <meta property="og:description" content="Step-by-step guide to connect Claude AI with WhatsApp Business using the MCP Server. Send messages, manage templates, and automate WhatsApp from Claude Desktop.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://whatsapp-mcp-server.eosspirit.workers.dev/blog-connect-claude-whatsapp.html">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://whatsapp-mcp-server.eosspirit.workers.dev/blog-connect-claude-whatsapp.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --green: #25D366;
+      --green-dark: #128C7E;
+      --dark: #0a0f1c;
+      --card: #111827;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #25D366;
+    }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: var(--dark); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    nav { padding: 20px 0; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(10, 15, 28, 0.95); backdrop-filter: blur(12px); z-index: 100; }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .logo span { color: var(--green); }
+    .nav-cta { background: var(--green); color: #000; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s; }
+    .nav-cta:hover { transform: translateY(-1px); }
+    .article { max-width: 780px; margin: 0 auto; padding: 60px 24px 80px; }
+    .article-meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 16px; }
+    .article h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 800; line-height: 1.15; margin-bottom: 24px; }
+    .article h1 .highlight { color: var(--green); }
+    .article h2 { font-size: 1.5rem; font-weight: 700; margin: 48px 0 16px; color: #fff; }
+    .article h3 { font-size: 1.2rem; font-weight: 600; margin: 32px 0 12px; color: var(--green); }
+    .article p { color: var(--text); font-size: 1.05rem; margin-bottom: 20px; line-height: 1.75; }
+    .article ul, .article ol { margin: 0 0 20px 24px; }
+    .article li { color: var(--text); font-size: 1.05rem; margin-bottom: 10px; line-height: 1.7; }
+    .article a { color: var(--green); text-decoration: underline; }
+    .article strong { color: #fff; }
+    .code-block { background: #0d1117; border: 1px solid var(--green-dark); border-radius: 14px; padding: 24px 28px; margin: 20px 0 28px; overflow-x: auto; }
+    .code-block pre { font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.88rem; line-height: 1.8; color: #e6edf3; }
+    .code-block .comment { color: #8b949e; }
+    .code-block .string { color: #a5d6ff; }
+    .code-block .keyword { color: #ff7b72; }
+    .tip-box { background: rgba(37, 211, 102, 0.08); border: 1px solid rgba(37, 211, 102, 0.25); border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
+    .tip-box strong { color: var(--green); }
+    .cta-section { background: var(--card); border: 1px solid var(--green-dark); border-radius: 16px; padding: 40px; text-align: center; margin: 48px 0 0; }
+    .cta-section h2 { margin-top: 0; }
+    .cta-section p { color: var(--muted); }
+    .btn-primary { background: var(--green); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all 0.2s; display: inline-block; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37, 211, 102, 0.3); }
+    .btn-secondary { background: var(--green-dark); color: #fff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1.05rem; border: 1px solid var(--green-dark); transition: all 0.2s; display: inline-block; }
+    .btn-secondary:hover { border-color: var(--green); color: var(--green); }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+    footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.9rem; }
+    footer a { color: var(--green); text-decoration: none; }
+    @media (max-width: 768px) { .article h1 { font-size: 1.8rem; } .cta-section { padding: 28px 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo" style="text-decoration:none;"><span>WA</span> MCP Server</a>
+      <ul style="display:flex;gap:24px;align-items:center;list-style:none;">
+        <li><a href="getting-started.html" style="color:#9ca3af;text-decoration:none;font-size:0.9rem;font-weight:500;">Get Started</a></li>
+        <li><a href="tools.html" style="color:#9ca3af;text-decoration:none;font-size:0.9rem;font-weight:500;">Tools</a></li>
+        <li><a href="pricing.html" style="color:#9ca3af;text-decoration:none;font-size:0.9rem;font-weight:500;">Pricing</a></li>
+        <li><a href="self-hosting.html" style="color:#9ca3af;text-decoration:none;font-size:0.9rem;font-weight:500;">Self-Host</a></li>
+        <li><a href="https://github.com/spirit122/whatsapp-mcp-server" class="nav-cta">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <article class="article">
+    <p class="article-meta">Published March 2026 &middot; 5 min read</p>
+    <h1>How to Connect <span class="highlight">Claude</span> with WhatsApp Business in 5 Minutes</h1>
+
+    <p>Connecting Claude AI to WhatsApp Business opens up powerful automation capabilities: send messages, manage templates, handle media, and even receive incoming messages — all through natural language. This guide walks you through the entire setup using the WhatsApp MCP Server, from zero to sending your first message.</p>
+
+    <h2>What Is an MCP Server for WhatsApp?</h2>
+    <p>The <strong>Model Context Protocol (MCP)</strong> is an open standard that lets AI assistants like Claude interact with external services. The WhatsApp MCP Server acts as a bridge between Claude Desktop and the WhatsApp Business API, giving Claude access to 43 tools across 8 modules — messaging, templates, media, webhooks, analytics, and more.</p>
+    <p>Unlike traditional chatbot platforms, you don't need to write code or deploy anything. The server runs on Cloudflare Workers at the edge, so latency is under 50ms worldwide.</p>
+
+    <h2>Prerequisites</h2>
+    <ul>
+      <li><strong>Claude Desktop</strong> installed on your computer (Windows or Mac)</li>
+      <li>A <strong>Meta Business account</strong> with WhatsApp Business API access</li>
+      <li>A <strong>WhatsApp Business phone number</strong> registered in Meta Business Suite</li>
+      <li>Your <strong>WhatsApp Access Token</strong> from the Meta Developer Portal</li>
+    </ul>
+
+    <h2>Step 1: Open Claude Desktop Configuration</h2>
+    <p>Claude Desktop uses a JSON configuration file to register MCP servers. You need to locate and edit this file.</p>
+
+    <h3>On Windows</h3>
+    <p>Open File Explorer and navigate to:</p>
+    <div class="code-block">
+<pre>%APPDATA%\Claude\claude_desktop_config.json</pre>
+    </div>
+
+    <h3>On macOS</h3>
+    <p>Open Finder and go to:</p>
+    <div class="code-block">
+<pre>~/Library/Application Support/Claude/claude_desktop_config.json</pre>
+    </div>
+
+    <p>Alternatively, open Claude Desktop, click the <strong>gear icon</strong> (Settings), go to <strong>Developer</strong>, and click <strong>Edit Config</strong>.</p>
+
+    <h2>Step 2: Add the WhatsApp MCP Server</h2>
+    <p>Paste the following JSON into your configuration file. If you already have other MCP servers configured, add the <code>"whatsapp"</code> entry inside the existing <code>"mcpServers"</code> object.</p>
+    <div class="code-block">
+<pre>{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"whatsapp"</span>: {
+      <span class="string">"type"</span>: <span class="string">"url"</span>,
+      <span class="string">"url"</span>: <span class="string">"https://whatsapp-mcp-server.eosspirit.workers.dev/mcp"</span>
+    }
+  }
+}</pre>
+    </div>
+
+    <div class="tip-box">
+      <strong>Tip:</strong> Make sure the JSON is valid. A missing comma or extra bracket will prevent Claude from loading the server. Use a JSON validator if unsure.
+    </div>
+
+    <h2>Step 3: Restart Claude Desktop</h2>
+    <p>After saving the configuration file, fully quit Claude Desktop and reopen it. You should see the WhatsApp MCP Server listed in the tools panel. Claude now has access to all WhatsApp Business tools available on your plan.</p>
+
+    <h2>Step 4: Authenticate with WhatsApp</h2>
+    <p>The first time you use a WhatsApp tool, Claude will ask you to provide your <strong>WhatsApp Access Token</strong> and <strong>Phone Number ID</strong>. You can find these in the <a href="https://developers.facebook.com/" target="_blank" rel="noopener">Meta Developer Portal</a> under your WhatsApp app settings.</p>
+    <p>Once authenticated, your credentials are stored securely and you won't need to enter them again.</p>
+
+    <h2>Step 5: Send Your First Message</h2>
+    <p>Now the fun part. Simply ask Claude in natural language:</p>
+    <div class="code-block">
+<pre><span class="comment">// Try any of these prompts:</span>
+
+<span class="string">"Send a WhatsApp message to +1 555 123 4567 saying
+ your order #4521 is ready for pickup"</span>
+
+<span class="string">"Show me all my WhatsApp message templates"</span>
+
+<span class="string">"What's my WhatsApp business profile info?"</span>
+
+<span class="string">"Send an image to +1 555 987 6543 with the caption
+ Here's your invoice for March"</span></pre>
+    </div>
+
+    <p>Claude will use the appropriate MCP tool automatically. You'll see the tool call in the interface and the result from WhatsApp.</p>
+
+    <h2>Troubleshooting Common Issues</h2>
+
+    <h3>Claude doesn't show the WhatsApp tools</h3>
+    <p>Make sure you saved the config file correctly and restarted Claude Desktop completely (not just closed the window). Check that the JSON syntax is valid.</p>
+
+    <h3>Authentication errors</h3>
+    <p>Verify that your WhatsApp Access Token hasn't expired. Tokens from the Meta Developer Portal test mode expire after 24 hours. For production, generate a permanent token through your System User in Meta Business Suite.</p>
+
+    <h3>Messages not delivering</h3>
+    <p>WhatsApp Business API requires that the recipient has opted in to receive messages, or you must use an approved <strong>message template</strong> for the first contact. Regular text messages can only be sent within the 24-hour customer service window after the user messages you first.</p>
+
+    <h3>Rate limit errors</h3>
+    <p>The Free plan includes 100 requests per hour. If you're hitting limits, consider upgrading to Pro (1,000 req/hour) or Enterprise (10,000 req/hour).</p>
+
+    <h2>What Can You Do Next?</h2>
+    <p>With the connection established, you can explore the full range of capabilities:</p>
+    <ul>
+      <li><strong>Interactive messages</strong> — Send buttons, list menus, and CTAs (Pro plan)</li>
+      <li><strong>Webhooks</strong> — Receive and search incoming messages (Pro plan)</li>
+      <li><strong>Analytics</strong> — Monitor delivery rates, phone quality, and messaging limits</li>
+      <li><strong>WhatsApp Flows</strong> — Build forms and surveys inside WhatsApp</li>
+      <li><strong>Auto-Reply</strong> — Set up AI-powered automatic responses to customers</li>
+    </ul>
+    <p>Check the <a href="tools.html">full tools reference</a> for details on all 43 available tools.</p>
+
+    <div class="cta-section">
+      <h2>Ready to Automate WhatsApp?</h2>
+      <p>Start with the free plan or unlock all 43 tools with Pro.</p>
+      <div class="cta-buttons">
+        <a href="https://spirit122.lemonsqueezy.com/checkout/buy/af231967-2bc4-4342-8d2e-e88cdd70ae42" class="btn-primary">Get Pro — $29/mo</a>
+        <a href="https://spirit122.lemonsqueezy.com/checkout/buy/5ec0efcf-f1b2-46bd-a1dc-6bd5a9a504b1" class="btn-secondary">Enterprise — $99/mo</a>
+      </div>
+      <p style="margin-top:16px;font-size:0.9rem;">Or <a href="https://github.com/spirit122/whatsapp-mcp-server">view the source on GitHub</a></p>
+    </div>
+  </article>
+
+  <footer>
+    <div class="container">
+      <p>Built by <a href="https://github.com/spirit122">spirit122</a> &middot; Powered by Cloudflare Workers &middot; <a href="https://github.com/spirit122/whatsapp-mcp-server">GitHub</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
