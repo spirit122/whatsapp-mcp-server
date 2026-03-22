@@ -45,25 +45,63 @@ export class WhatsAppClient {
     this.wabaId = env.WHATSAPP_BUSINESS_ACCOUNT_ID;
   }
 
-  // ── Private HTTP methods ──
+  // ── Private HTTP methods with automatic retry ──
+
+  private readonly MAX_RETRIES = 3;
+  private readonly RETRY_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    retryCount = 0
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
-    });
 
-    const data = await response.json();
+    let response: Response;
+    let data: any;
+
+    try {
+      response = await fetch(url, {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+          ...options.headers,
+        },
+      });
+    } catch (err) {
+      // Network error — retry if we haven't exhausted attempts
+      if (retryCount < this.MAX_RETRIES) {
+        await this.delay(retryCount);
+        return this.request<T>(endpoint, options, retryCount + 1);
+      }
+      throw new WhatsAppApiError(
+        `Network error after ${this.MAX_RETRIES + 1} attempts: ${err instanceof Error ? err.message : String(err)}`,
+        0
+      );
+    }
+
+    try {
+      data = await response.json();
+    } catch {
+      // Non-JSON response (e.g., HTML error page from Meta during outage)
+      if (retryCount < this.MAX_RETRIES && this.RETRY_STATUS_CODES.has(response.status)) {
+        await this.delay(retryCount);
+        return this.request<T>(endpoint, options, retryCount + 1);
+      }
+      throw new WhatsAppApiError(
+        `Meta API returned non-JSON response (HTTP ${response.status})`,
+        response.status
+      );
+    }
 
     if (!response.ok) {
+      // Retry on rate limit (429) or server errors (5xx)
+      if (retryCount < this.MAX_RETRIES && this.RETRY_STATUS_CODES.has(response.status)) {
+        await this.delay(retryCount);
+        return this.request<T>(endpoint, options, retryCount + 1);
+      }
+
       const error = data as ErrorResponse;
       throw new WhatsAppApiError(
         error.error?.message || "Unknown API error",
@@ -74,6 +112,11 @@ export class WhatsAppClient {
     }
 
     return data as T;
+  }
+
+  private delay(retryCount: number): Promise<void> {
+    const ms = Math.min(1000 * Math.pow(2, retryCount), 8000); // 1s, 2s, 4s, max 8s
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   private async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {

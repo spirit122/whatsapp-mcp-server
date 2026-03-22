@@ -70,24 +70,50 @@ export default {
     try {
       // ── Route: Health Check ──
       if (url.pathname === "/" || url.pathname === "/health") {
-        return corsResponse(
-          Response.json({
-            status: "ok",
-            server: env.MCP_SERVER_NAME || "whatsapp-business-mcp",
-            version: env.MCP_SERVER_VERSION || "1.0.0",
-            tools: getAllToolDefinitions().length,
-            modules: [
-              "messages",
-              "interactive",
-              "templates",
-              "media",
-              "webhooks",
-              "profile",
-              "flows",
-              "analytics",
-            ],
-          })
-        );
+        let metaApiStatus = "not_checked";
+        let metaApiLatency = 0;
+
+        // Deep health check if ?deep=true
+        if (url.searchParams.get("deep") === "true" && env.WHATSAPP_ACCESS_TOKEN) {
+          const start = Date.now();
+          try {
+            const res = await fetch(
+              `${env.WHATSAPP_API_BASE_URL}/${env.WHATSAPP_API_VERSION}/${env.WHATSAPP_PHONE_NUMBER_ID}?fields=verified_name`,
+              { headers: { Authorization: `Bearer ${env.WHATSAPP_ACCESS_TOKEN}` } }
+            );
+            metaApiLatency = Date.now() - start;
+            metaApiStatus = res.ok ? "connected" : `error_${res.status}`;
+          } catch {
+            metaApiLatency = Date.now() - start;
+            metaApiStatus = "unreachable";
+          }
+        }
+
+        const healthResponse: Record<string, unknown> = {
+          status: "ok",
+          server: env.MCP_SERVER_NAME || "whatsapp-business-mcp",
+          version: env.MCP_SERVER_VERSION || "1.0.0",
+          tools: getAllToolDefinitions().length,
+          uptime: "cloudflare_workers",
+          reliability: {
+            retry: "3 attempts with exponential backoff (1s, 2s, 4s)",
+            retry_on: "429 (rate limit), 500, 502, 503, 504, network errors",
+            validation: "Zod schema validation on all inputs",
+            tenant_isolation: "Separate Durable Objects per tenant",
+            anti_spam: "Allowlist, per-recipient rate limits, content filtering",
+          },
+          modules: [
+            "messages", "interactive", "templates", "media",
+            "webhooks", "profile", "flows", "analytics",
+            "safety", "auto-reply",
+          ],
+        };
+
+        if (url.searchParams.get("deep") === "true") {
+          healthResponse.meta_api = { status: metaApiStatus, latency_ms: metaApiLatency };
+        }
+
+        return corsResponse(Response.json(healthResponse));
       }
 
       // ── Route: MCP JSON-RPC (HTTP transport) ──
