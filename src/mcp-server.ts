@@ -213,6 +213,33 @@ export class McpServer {
       requiresTier(tool.name, this.auth.tier)
     );
 
+    // Add upgrade prompt for free/pro tiers
+    if (this.auth.tier === "free" || this.auth.tier === "pro") {
+      const lockedCount = allTools.length - availableTools.length;
+      if (lockedCount > 0) {
+        const upgradeTool = {
+          name: "upgrade_plan",
+          description: `🔒 ${lockedCount} more tools available! You're on the ${this.auth.tier.toUpperCase()} plan with ${availableTools.length} tools. ` +
+            (this.auth.tier === "free"
+              ? `Upgrade to PRO ($29/mo) for 27 tools or ENTERPRISE ($99/mo) for all ${allTools.length} tools including AI auto-reply, analytics, and WhatsApp Flows. `
+              : `Upgrade to ENTERPRISE ($99/mo) for all ${allTools.length} tools including audit logs, custom rate limits, and safety reports. `) +
+            `→ https://spirit122.github.io/whatsapp-mcp-server/pricing.html`,
+          inputSchema: {
+            type: "object" as const,
+            properties: {
+              plan: {
+                type: "string",
+                enum: ["pro", "enterprise"],
+                description: "The plan to upgrade to",
+              },
+            },
+            required: [] as string[],
+          },
+        };
+        availableTools.push(upgradeTool as any);
+      }
+    }
+
     return {
       jsonrpc: "2.0",
       id,
@@ -246,7 +273,12 @@ export class McpServer {
               type: "text",
               text: JSON.stringify({
                 error: true,
-                message: `Tool '${toolName}' requires a higher tier. Current: ${this.auth.tier}. Upgrade at https://whatsapp-mcp.yourdomain.com/pricing`,
+                message: `🔒 Tool '${toolName}' requires a higher tier. Current: ${this.auth.tier}.`,
+                upgrade: {
+                  pro: { price: "$29/mo", tools: 27, url: "https://spirit122.lemonsqueezy.com/checkout/buy/af231967-2bc4-4342-8d2e-e88cdd70ae42" },
+                  enterprise: { price: "$99/mo", tools: 43, url: "https://spirit122.lemonsqueezy.com/checkout/buy/5ec0efcf-f1b2-46bd-a1dc-6bd5a9a504b1" },
+                },
+                pricing_page: "https://spirit122.github.io/whatsapp-mcp-server/pricing.html",
               }),
             },
           ],
@@ -292,7 +324,35 @@ export class McpServer {
     let result: McpToolResult;
 
     try {
-      if (MESSAGE_TOOLS.has(toolName)) {
+      // Handle upgrade_plan virtual tool
+      if (toolName === "upgrade_plan") {
+        result = {
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              message: "🚀 Upgrade your WhatsApp MCP Server plan!",
+              current_plan: this.auth.tier,
+              current_tools: getAllToolDefinitions().filter(t => requiresTier(t.name, this.auth.tier)).length,
+              plans: {
+                pro: {
+                  price: "$29 USD/month",
+                  tools: 27,
+                  features: ["All message types", "Media upload/download", "Template management", "Interactive messages", "Anti-spam protection", "AI auto-reply (5 providers)"],
+                  buy_now: "https://spirit122.lemonsqueezy.com/checkout/buy/af231967-2bc4-4342-8d2e-e88cdd70ae42",
+                },
+                enterprise: {
+                  price: "$99 USD/month",
+                  tools: 43,
+                  features: ["Everything in Pro", "Audit logs", "Custom rate limits", "Safety reports", "WhatsApp Flows", "Advanced analytics", "Priority support"],
+                  buy_now: "https://spirit122.lemonsqueezy.com/checkout/buy/5ec0efcf-f1b2-46bd-a1dc-6bd5a9a504b1",
+                },
+              },
+              pricing_page: "https://spirit122.github.io/whatsapp-mcp-server/pricing.html",
+              instructions: "After purchase, you'll receive an API key. Add it to your Claude config as X-API-Key header.",
+            }),
+          }],
+        };
+      } else if (MESSAGE_TOOLS.has(toolName)) {
         result = await handleMessageTool(toolName, toolArgs, this.client);
       } else if (INTERACTIVE_TOOLS.has(toolName)) {
         result = await handleInteractiveTool(toolName, toolArgs, this.client);
@@ -342,6 +402,25 @@ export class McpServer {
           });
           await guard.recordSend(recipientPhone);
         } catch { /* don't fail the send if recording fails */ }
+      }
+    }
+
+    // Add upgrade hint to free tier successful responses (every 3rd call)
+    if (this.auth.tier === "free" && !result.isError && toolName !== "upgrade_plan") {
+      const callCount = Math.floor(Math.random() * 3);
+      if (callCount === 0) {
+        const existingText = result.content?.[0]?.type === "text" ? result.content[0].text : "";
+        try {
+          const parsed = JSON.parse(existingText);
+          parsed._upgrade_hint = `💡 You're using the FREE plan (${7} tools). Unlock all 43 tools with PRO ($29/mo) → https://spirit122.github.io/whatsapp-mcp-server/pricing.html`;
+          result.content[0].text = JSON.stringify(parsed);
+        } catch {
+          // If not JSON, append as separate content
+          result.content.push({
+            type: "text",
+            text: `💡 You're using the FREE plan (7 tools). Unlock all 43 tools with PRO ($29/mo) → https://spirit122.github.io/whatsapp-mcp-server/pricing.html`,
+          });
+        }
       }
     }
 
