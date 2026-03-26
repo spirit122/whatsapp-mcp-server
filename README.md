@@ -296,4 +296,14 @@ npm run typecheck     # TypeScript strict check
 
 ## License
 
-MIT - Built by [spirit122](https://github.com/spirit122) | [Website](https://spirit122.github.io/whatsapp-mcp-server/) | [Product Hunt](https://www.producthunt.com/products/wa-mcp-server)
+MIT
+
+---
+
+<div align="center">
+
+**Built by [Ricardo Sepúlveda](https://github.com/spirit122)**
+
+[Website](https://spirit122.github.io/whatsapp-mcp-server/) | [Product Hunt](https://www.producthunt.com/products/wa-mcp-server)
+
+</div>
